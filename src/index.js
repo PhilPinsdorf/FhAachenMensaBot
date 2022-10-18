@@ -10,6 +10,8 @@ const scraper = require('./scraper');
 const bot = new Telegraf(process.env.BOT_SECRET);
 const dbUri = process.env.DB_URI;
 
+let message = ``;
+
 const userShema = new Schema({
   chat_id: { 
     type: String,
@@ -31,8 +33,12 @@ mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true })
             startBot();
             console.log('Started Telegram Bot');
             app.listen(process.env.PORT || 3000, () => console.log('Listen to 3000'));
-            // schedule.scheduleJob('*/5 * * * *', () => { sendMessages() }) 
-            console.log('Started Chron Job');
+            parseToMessage();
+            console.log("Parsed Message on Start.");
+            schedule.scheduleJob('*/1 * * * *', () => { sendMessages() })
+            console.log('Started Chron Job for Sending Messages');
+            schedule.scheduleJob('30 4 * * *', () => { parseToMessage() }) 
+            console.log('Started Chron Job for updating Message');
 	    })
         .catch((err) => {
 		    console.log(err);
@@ -56,7 +62,7 @@ function startBot() {
                     if (err) { throw err }
 
                     console.log(`Registered User ${name} with id ${id}`);
-                    ctx.replyWithMarkdownV2(`Danke \*${name}\*, dass du dich für den Dienst angemeldet hat\\! \n\nDu bekommst ab jetzt jeden Tag um \*10:30 Uhr\* eine Benachichtigung darüber, was es heute in der Mensa der Eupener Straße zu essen gibt\\. \n\nWenn du dich von diesem Dienst abmelden möchtest kannst du dies mit /stop tun\\.`);
+                    ctx.replyWithMarkdownV2(`Danke \*${name}\*, dass du dich für den Dienst angemeldet hat\\! \n\nDu bekommst ab jetzt jeden Tag um \*10:30 Uhr\* eine Benachichtigung darüber, was es heute in der Mensa der Eupener Straße zu essen gibt\\. Falls du zwischendurch nachgucken möchtest, was es in der Mensa gibt kannst du das jederzeit mit /request tun\\. \n\nWenn du dich von diesem Dienst abmelden möchtest kannst du dies mit /stop tun\\.`);
                 });
 
             } else {
@@ -86,7 +92,7 @@ function startBot() {
     });
 
     bot.command('request', (ctx) => {
-        sendMessages(ctx.message.chat.id);
+        sendMessage(ctx.message.chat.id);
     });
 
     bot.launch();
@@ -95,9 +101,20 @@ function startBot() {
 process.once("SIGINT", () => bot.stop("SIGINT"));
 process.once("SIGTERM", () => bot.stop("SIGTERM"));
 
-function sendMessages(id) {
-    scraper.scrape().then((foodSelection) => {
+function sendMessage(id) {
+    bot.telegram.sendMessage(id, message, { parse_mode: "MarkdownV2" });
+}
 
+function sendMessages() {
+    User.find({}, function(err, users) {
+        users.forEach(function(user) {
+            sendMessage(parseInt(user.chat_id));
+        });
+    });
+}
+
+function parseToMessage(){
+    scraper.scrape().then((foodSelection) => {
         let header = `\*Heute gibt es in der Mensa:\* \n\n\n`;
         let body = ``;
 
@@ -129,6 +146,6 @@ function sendMessages(id) {
 
         header += body;
 
-        bot.telegram.sendMessage(id, header, { parse_mode: "MarkdownV2" });
+        message = header;
     });
 }
