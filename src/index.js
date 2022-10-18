@@ -97,12 +97,11 @@ process.once("SIGTERM", () => bot.stop("SIGTERM"));
 
 function sendMessages(id) {
     scraper.scrape().then((foodSelection) => {
-        console.log(foodSelection);
 
-        let header = "Heute in der Mensa gibt es: \n\n\n";
+        let header = `Heute in der Mensa gibt es: \n\n\n`;
         let body = ``;
 
-        food.dishes.foreach((dish) => {
+        foodSelection.dishes.foreach((dish) => {
             let text = ``;
             text += `\*${dish.type}\*\\:\n`;
 
@@ -128,6 +127,8 @@ function sendMessages(id) {
         body += `\*Hauptbeilagen\*\\:\n${sides[0]} oder ${sides[1]}\n\n`;
         body += `\*Nebenbeilage\*\\:\n${vegetables[0]} oder ${vegetables[1]}`;
 
-        bot.telegram.sendMessage(id, body);
+        header += body;
+
+        bot.telegram.sendMessage(id, header);
     });
 }
