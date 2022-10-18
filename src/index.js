@@ -98,7 +98,7 @@ process.once("SIGTERM", () => bot.stop("SIGTERM"));
 function sendMessages(id) {
     scraper.scrape().then((foodSelection) => {
 
-        let header = `Heute in der Mensa gibt es: \n\n\n`;
+        let header = `\*Heute gibt es in der Mensa:\* \n\n\n`;
         let body = ``;
 
         foodSelection.dishes.forEach((dish) => {
@@ -129,6 +129,6 @@ function sendMessages(id) {
 
         header += body;
 
-        bot.telegram.sendMessage(id, header);
+        bot.telegram.Mark(id, header, { parse_mode: "MarkdownV2" });
     });
 }
