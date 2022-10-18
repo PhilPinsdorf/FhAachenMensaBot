@@ -101,12 +101,12 @@ function sendMessages(id) {
         let header = `Heute in der Mensa gibt es: \n\n\n`;
         let body = ``;
 
-        foodSelection.dishes.foreach((dish) => {
+        foodSelection.dishes.forEach((dish) => {
             let text = ``;
             text += `\*${dish.type}\*\\:\n`;
 
             let len = dish.desc.length;
-            dish.desc.foreach((ingredient) => {
+            dish.desc.forEach((ingredient) => {
                 text += `${ingredient}`;
                 if(len == 2) {
                     text += ` und `;
