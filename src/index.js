@@ -86,9 +86,7 @@ function startBot() {
     });
 
     bot.command('request', (ctx) => {
-        scraper.scrape().then((foodSelection) => {
-            ctx.reply(foodSelection + "");
-        });
+        sendMessages(ctx.message.chat.id);
     });
 
     bot.launch();
@@ -97,8 +95,39 @@ function startBot() {
 process.once("SIGINT", () => bot.stop("SIGINT"));
 process.once("SIGTERM", () => bot.stop("SIGTERM"));
 
-function sendMessages() {
+function sendMessages(id) {
     scraper.scrape().then((foodSelection) => {
         console.log(foodSelection);
+
+        let header = "Heute in der Mensa gibt es: \n\n\n";
+        let body = ``;
+
+        food.dishes.foreach((dish) => {
+            let text = ``;
+            text += `\*${dish.type}\*\\:\n`;
+
+            let len = dish.desc.length;
+            dish.desc.foreach((ingredient) => {
+                text += `${ingredient}`;
+                if(len == 2) {
+                    text += ` und `;
+                }
+                if(len > 2) {
+                    text += `, `;
+                }
+                len--;
+            });
+
+            text += ` für \*${dish.price}\*\n\n`;
+
+            body += text;
+        });
+
+        body += `\n`;
+
+        body += `\*Hauptbeilagen\*\\:\n${sides[0]} oder ${sides[1]}\n\n`;
+        body += `\*Nebenbeilage\*\\:\n${vegetables[0]} oder ${vegetables[1]}`;
+
+        bot.telegram.sendMessage(id, body);
     });
 }
