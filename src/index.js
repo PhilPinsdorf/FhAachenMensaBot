@@ -2,6 +2,7 @@
 const { Telegraf } = require('telegraf');
 const mongoose = require('mongoose');
 const express = require('express');
+const schedule = require('node-schedule'); 
 const Schema = mongoose.Schema;
 
 const scraper = require('./scraper');
@@ -30,6 +31,8 @@ mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true })
             startBot();
             console.log('Started Telegram Bot');
             app.listen(process.env.PORT || 3000, () => console.log('Listen to 3000'));
+            // schedule.scheduleJob('*/5 * * * *', () => { sendMessages() }) 
+            console.log('Started Chron Job');
 	    })
         .catch((err) => {
 		    console.log(err);
@@ -79,6 +82,12 @@ function startBot() {
                 console.log(`User ${name} with id ${id} deleted his account.`);
                 ctx.replyWithMarkdownV2(`Vielen Dank \*${name}\*, dass du meinen Dienst verwendet hast\\. \n\nDu hast hiermit deinen Account \*gelöscht\* und wirst in Zukunft \*keine Benachichtigungen\* mehr bekommen\\. \n\nFalls du dich doch umentscheiden solltest kannst du jederzeit dich mit /start \*wieder anmelden\*\\.`);
             }
+        });
+    });
+
+    bot.command('request', (ctx) => {
+        scraper.scrape().then((foodSelection) => {
+            ctx.reply(foodSelection + "");
         });
     });
 
