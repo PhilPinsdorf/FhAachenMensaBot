@@ -129,6 +129,6 @@ function sendMessages(id) {
 
         header += body;
 
-        bot.telegram.Mark(id, header, { parse_mode: "MarkdownV2" });
+        bot.telegram.sendMessage(id, header, { parse_mode: "MarkdownV2" });
     });
 }
