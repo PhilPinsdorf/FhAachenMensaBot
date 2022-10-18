@@ -35,9 +35,9 @@ mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true })
             app.listen(process.env.PORT || 3000, () => console.log('Listen to 3000'));
             parseToMessage();
             console.log("Parsed Message on Start.");
-            schedule.scheduleJob('30 10 * * *', () => { sendMessages() })
+            schedule.scheduleJob('30 10 * * 1-5', () => { sendMessages() })
             console.log('Started Chron Job for sending Messages');
-            schedule.scheduleJob('30 4 * * *', () => { parseToMessage() }) 
+            schedule.scheduleJob('30 4 * * 1-5', () => { parseToMessage() }) 
             console.log('Started Chron Job for updating Message');
 	    })
         .catch((err) => {
