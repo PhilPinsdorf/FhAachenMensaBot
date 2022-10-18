@@ -124,8 +124,8 @@ function sendMessages(id) {
 
         body += `\n`;
 
-        body += `\*Hauptbeilagen\*\\:\n${sides[0]} oder ${sides[1]}\n\n`;
-        body += `\*Nebenbeilage\*\\:\n${vegetables[0]} oder ${vegetables[1]}`;
+        body += `\*Hauptbeilagen\*\\:\n${foodSelection.sides[0]} oder ${foodSelection.sides[1]}\n\n`;
+        body += `\*Nebenbeilage\*\\:\n${foodSelection.vegetables[0]} oder ${foodSelection.vegetables[1]}`;
 
         header += body;
 
