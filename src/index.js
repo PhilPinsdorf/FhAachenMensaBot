@@ -1,6 +1,7 @@
 // import express from "express";
 const { Telegraf } = require('telegraf');
 const mongoose = require('mongoose');
+const express = require('express');
 const Schema = mongoose.Schema;
 
 const scraper = require('./scraper');
@@ -19,6 +20,8 @@ const userShema = new Schema({
   }   
 });
 
+const app = express();
+
 const User = mongoose.model('User', userShema);
 
 mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -26,6 +29,7 @@ mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true })
             console.log('Connected to Database');
             startBot();
             console.log('Started Telegram Bot');
+            app.listen(process.env.PORT || 3000, () => console.log('Listen to 3000'));
 	    })
         .catch((err) => {
 		    console.log(err);
