@@ -35,8 +35,8 @@ mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true })
             app.listen(process.env.PORT || 3000, () => console.log('Listen to 3000'));
             parseToMessage();
             console.log("Parsed Message on Start.");
-            schedule.scheduleJob('*/1 * * * *', () => { sendMessages() })
-            console.log('Started Chron Job for Sending Messages');
+            schedule.scheduleJob('30 10 * * *', () => { sendMessages() })
+            console.log('Started Chron Job for sending Messages');
             schedule.scheduleJob('30 4 * * *', () => { parseToMessage() }) 
             console.log('Started Chron Job for updating Message');
 	    })
@@ -103,6 +103,7 @@ process.once("SIGTERM", () => bot.stop("SIGTERM"));
 
 function sendMessage(id) {
     bot.telegram.sendMessage(id, message, { parse_mode: "MarkdownV2" });
+    console.log(`Send Message to user ${id}.`);
 }
 
 function sendMessages() {
