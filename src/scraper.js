@@ -47,7 +47,7 @@ function getMainSides($) {
 function getFurtherSides($) {
     $('.active-panel > table.extras > tbody > tr:nth-child(2) > td.menue-wrapper > span.menue-item.extra.menue-desc > .seperator').replaceWith(',');
     let mainSides = $('.active-panel > table.extras > tbody > tr:nth-child(2) > td.menue-wrapper > span.menue-item.extra.menue-desc').clone().children().remove().end().text();
-    return mainSides.split(',').map(elem => elem.trim()).map(elem => elem.replace('-', '\\-'));
+    return mainSides.split(',').map(elem => elem.trim()).map(elem => elem.replace(/-/g, '\\-'));
 }
 
 module.exports.scrape = scrape;
