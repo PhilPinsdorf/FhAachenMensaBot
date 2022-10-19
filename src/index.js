@@ -18,6 +18,9 @@ const userShema = new Schema({
     type: String,
     required: true
   },
+  name: {
+    type: String
+  },
   joined: {
     type: Date,
     default: Date.now
@@ -72,7 +75,8 @@ function startBot(callback) {
 
             if (!result) {
                 newUser = new User({
-                    chat_id: id
+                    chat_id: id,
+                    name: name
                 });
 
                 newUser.save((err, user) => {
