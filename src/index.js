@@ -6,6 +6,7 @@ const schedule = require('node-schedule');
 const Schema = mongoose.Schema;
 
 const scraper = require('./scraper');
+const request = require('request');
 
 const bot = new Telegraf(process.env.BOT_SECRET);
 const dbUri = process.env.DB_URI;
@@ -30,22 +31,38 @@ const User = mongoose.model('User', userShema);
 mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true })
         .then((result) => {
             console.log('Connected to Database');
-            startBot();
-            console.log('Started Telegram Bot');
-            app.listen(process.env.PORT || 3000, () => console.log('Listen to 3000'));
-            parseToMessage();
-            console.log("Parsed Message on Start.");
-            schedule.scheduleJob('30 10 * * 1-5', () => { sendMessages() })
-            console.log('Started Chron Job for sending Messages');
-            schedule.scheduleJob('30 4 * * 1-5', () => { parseToMessage() }) 
-            console.log('Started Chron Job for updating Message');
+            app.listen(process.env.PORT || 3000, () => {
+                console.log('Listen to 3000');
+                parseToMessage((result) => {
+                    console.log("Parsed Message on Start.");
+                    startBot((result) => {
+                        console.log('Started Telegram Bot');
+                        schedule.scheduleJob('30 10 * * 1-5', () => { sendMessages() })
+                        console.log('Started Chron Job for sending Messages');
+                        schedule.scheduleJob('30 4 * * 1-5', () => { parseToMessage() }) 
+                        console.log('Started Chron Job for updating Message');
+                        schedule.scheduleJob('*/10 * * * *', () => { keepAlive() }) 
+                        console.log('Started Chron Job for keeping Alive Backend');
+                    });
+                });
+            });
 	    })
         .catch((err) => {
 		    console.log(err);
 	    });
 
+app.get('/keepAlive', (req, res) => {
+    res.send('Received keep Alive Ping.');
+    res.end();
+});
 
-function startBot() {
+function keepAlive() {
+    request('https://fhaachenmensabot.herokuapp.com/keepAlive', (err, res, body) => {
+        console.log(res.body);
+    })
+}
+
+function startBot(callback) {
     bot.start((ctx) => {
         const id = ctx.message.chat.id;
         const name = ctx.message.chat.first_name;
@@ -96,6 +113,8 @@ function startBot() {
     });
 
     bot.launch();
+
+    callback(true);
 }
 
 process.once("SIGINT", () => bot.stop("SIGINT"));
@@ -114,7 +133,7 @@ function sendMessages() {
     });
 }
 
-function parseToMessage(){
+function parseToMessage(callback){
     scraper.scrape().then((foodSelection) => {
         let header = `\*Heute gibt es in der Mensa:\* \n\n\n`;
         let body = ``;
@@ -148,5 +167,7 @@ function parseToMessage(){
         header += body;
 
         message = header;
+
+        callback(true);
     });
 }
