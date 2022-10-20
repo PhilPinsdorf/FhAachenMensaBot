@@ -20,7 +20,7 @@ You'll get all relevant information through the bot.
 - [ ] Evaluate meals (?)
 
 # Attention
-The new meals are loaded at 4:30am. Any requsts before that time will give you yesterdays meals.
+The new meals are loaded at 4:30am. Any requests before that time will give you yesterdays meals.
 
 # Author
 Phil Pinsdorf
