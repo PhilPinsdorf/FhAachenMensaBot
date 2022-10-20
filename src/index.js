@@ -127,15 +127,15 @@ function startBot(callback) {
 process.once("SIGINT", () => bot.stop("SIGINT"));
 process.once("SIGTERM", () => bot.stop("SIGTERM"));
 
-function sendMessage(id) {
-    bot.telegram.sendMessage(id, message, { parse_mode: "MarkdownV2" });
+function sendMessage(id, name) {
+    bot.telegram.sendMessage(id, `Guten Morgen ${name}\\!\n` + message, { parse_mode: "MarkdownV2" });
     console.log(`Send Message to user ${id}.`);
 }
 
 function sendMessages() {
     User.find({}, function(err, users) {
         users.forEach(function(user) {
-            sendMessage(parseInt(user.chat_id));
+            sendMessage(parseInt(user.chat_id, user.name));
         });
     });
 }
