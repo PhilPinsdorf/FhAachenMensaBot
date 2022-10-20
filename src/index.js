@@ -135,7 +135,7 @@ function sendMessage(id, name) {
 function sendMessages() {
     User.find({}, function(err, users) {
         users.forEach(function(user) {
-            sendMessage(parseInt(user.chat_id, user.name));
+            sendMessage(parseInt(user.chat_id), user.name);
         });
     });
 }
