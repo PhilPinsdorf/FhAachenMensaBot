@@ -116,7 +116,9 @@ function startBot(callback) {
     });
 
     bot.command('request', (ctx) => {
-        sendMessage(ctx.message.chat.id);
+        let id = ctx.message.chat.id;
+        let name = ctx.message.chat.name;
+        sendMessage(id, name);
     });
 
     bot.launch();
@@ -135,8 +137,6 @@ function sendMessage(id, name) {
 function sendMessages() {
     User.find({}, function(err, users) {
         users.forEach(function(user) {
-            console.log("Test");
-            console.log(user + "");
             sendMessage(parseInt(user.chat_id), user.name);
         });
     });
