@@ -13,6 +13,12 @@ You'll get all relevant information throug the Bot.
 - /stop => Unsubscribe from Daily Canteen Updates
 - /request => Immediately sends you todays Meals
 
+# ToDo
+- [ ] Clean up Code
+- [ ] Sanitize Usernames
+- [ ] Select your Canteen / Add all CAnteens in Aachen
+- [ ] Evaluate Meals (?)
+
 # Attention
 The new Meals are loaded at 4:30 in the night. Any requsts before that will give you yesterdays Meals.
 
