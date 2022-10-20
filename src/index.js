@@ -117,7 +117,7 @@ function startBot(callback) {
 
     bot.command('request', (ctx) => {
         let id = ctx.message.chat.id;
-        let name = ctx.message.chat.name;
+        let name = ctx.message.chat.first_name;
         sendMessage(id, name);
     });
 
