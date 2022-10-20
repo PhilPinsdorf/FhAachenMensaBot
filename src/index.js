@@ -43,7 +43,7 @@ mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true })
 
                         // Chron Jobs jeweils minus 2 Stunden wegen anderer Zeitzone
 
-                        schedule.scheduleJob('30 8 * * 1-5', () => { sendMessages() })
+                        schedule.scheduleJob('30 7 * * 1-5', () => { sendMessages() })
                         console.log('Started Chron Job for sending Messages');
                         schedule.scheduleJob('30 2 * * 1-5', () => { parseToMessage() }) 
                         console.log('Started Chron Job for updating Message');
@@ -86,7 +86,7 @@ function startBot(callback) {
                     if (err) { throw err }
 
                     console.log(`Registered User ${name} with id ${id}`);
-                    ctx.replyWithMarkdownV2(`Danke \*${name}\*, dass du dich für den Dienst angemeldet hat\\! \n\nDu bekommst ab jetzt jeden Tag um \*10:30 Uhr\* eine Benachichtigung darüber, was es heute in der Mensa der Eupener Straße zu essen gibt\\. Falls du zwischendurch nachgucken möchtest, was es in der Mensa gibt kannst du das jederzeit mit /request tun\\. \n\nWenn du dich von diesem Dienst abmelden möchtest kannst du dies mit /stop tun\\.`);
+                    ctx.replyWithMarkdownV2(`Danke \*${name}\*, dass du dich für den Dienst angemeldet hast\\! \n\nDu bekommst ab jetzt jeden Tag um \*9:30 Uhr\* eine Benachrichtigung darüber, was es heute in der Mensa der Eupener Straße zu essen gibt\\. Falls du zwischendurch nachgucken möchtest, was es in der Mensa gibt, kannst du das jederzeit mit /request tun\\. \n\nMit /stop kannst du dich von diesem Dienst wieder abmelden\\. \n\nBei Rückfragen oder Bugs, schreibe \\@philpinsdorf auf Telegram an.`);
                 });
 
             } else {
