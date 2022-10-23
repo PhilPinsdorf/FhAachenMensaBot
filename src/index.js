@@ -86,7 +86,7 @@ function startBot(callback) {
                     if (err) { throw err }
 
                     console.log(`Registered User ${name} with id ${id}`);
-                    ctx.reply(`Danke ${name}, dass du dich für den Dienst angemeldet hast! \n\nDu bekommst ab jetzt jeden Tag um 9:30 Uhr eine Benachrichtigung darüber, was es heute in der Mensa der Eupener Straße zu essen gibt. Falls du zwischendurch nachgucken möchtest, was es in der Mensa gibt, kannst du das jederzeit mit /request tun. \n\nMit /stop kannst du dich von diesem Dienst wieder abmelden. \n\nBei Rückfragen oder Bugs, schreibe @philpinsdorf auf Telegram an.`);
+                    ctx.replyWithMarkdownV2(`Danke ${name}, dass du dich für den Dienst angemeldet hast\\! \n\nDu bekommst ab jetzt jeden Tag um \*9:30 Uhr\* eine Benachrichtigung darüber, was es heute in der Mensa der Eupener Straße zu essen gibt\\. Falls du zwischendurch nachgucken möchtest, was es in der Mensa gibt, kannst du das jederzeit mit /request tun\\. \n\nMit /stop kannst du dich von diesem Dienst wieder abmelden\\. \n\nBei Rückfragen oder Bugs, schreibe \\@philpinsdorf auf Telegram an\\.`);
                 });
 
             } else {
@@ -110,7 +110,7 @@ function startBot(callback) {
 
             } else {
                 console.log(`User ${name} with id ${id} deleted his account.`);
-                ctx.reply(`Vielen Dank ${name}, dass du meinen Dienst verwendet hast. \n\nDu hast hiermit deinen Account gelöscht und wirst in Zukunft keine Benachichtigungen mehr bekommen. \n\nFalls du dich doch umentscheiden solltest kannst du jederzeit dich mit /start wieder anmelden.`);
+                ctx.replyWithMarkdownV2(`Vielen Dank ${name}, dass du meinen Dienst verwendet hast\\. \n\nDu hast hiermit deinen Account \*gelöscht\* und wirst in Zukunft \*keine Benachichtigungen\* mehr bekommen\\. \n\nFalls du dich doch umentscheiden solltest kannst du jederzeit dich mit /start \*wieder anmelden\*\\.`);
             }
         });
     });
@@ -130,7 +130,7 @@ process.once("SIGINT", () => bot.stop("SIGINT"));
 process.once("SIGTERM", () => bot.stop("SIGTERM"));
 
 function sendMessage(id, name) {
-    bot.telegram.sendMessage(id, `Guten Morgen ${name}!\n` + message);
+    bot.telegram.sendMessage(id, `Guten Morgen ${name}\\!\n` + message, { parse_mode: "MarkdownV2" });
     console.log(`Send Message to user ${id}.`);
 }
 
@@ -142,41 +142,3 @@ function sendMessages() {
     });
 }
 
-function parseToMessage(callback){
-    scraper.scrape().then((foodSelection) => {
-        let header = `Heute gibt es in der Mensa: \n\n\n`;
-        let body = ``;
-
-        foodSelection.dishes.forEach((dish) => {
-            let text = ``;
-            text += `${dish.type}:\n`;
-
-            let len = dish.desc.length;
-            dish.desc.forEach((ingredient) => {
-                text += `${ingredient}`;
-                if(len == 2) {
-                    text += ` und `;
-                }
-                if(len > 2) {
-                    text += `, `;
-                }
-                len--;
-            });
-
-            text += ` für ${dish.price}\n\n`;
-
-            body += text;
-        });
-
-        body += `\n`;
-
-        body += `Hauptbeilagen:\n${foodSelection.sides[0]} oder ${foodSelection.sides[1]}\n\n`;
-        body += `Nebenbeilage:\n${foodSelection.vegetables[0]} oder ${foodSelection.vegetables[1]}`;
-
-        header += body;
-
-        message = header;
-
-        callback(true);
-    });
-}
