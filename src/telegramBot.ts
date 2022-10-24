@@ -21,7 +21,7 @@ export function startBot(): Promise<void> {
 
                     console.log(`Registered User ${name} with id ${id}`);
 
-                    ctx.replyWithMarkdownV2(`Danke ${name}, dass du dich für den Dienst angemeldet hast\\! \n\nDu bekommst ab jetzt jeden Tag um \*9:30 Uhr\* eine Benachrichtigung darüber, was es heute in deiner Aachener Mensa zu essen gibt\\. Falls du zwischendurch nachgucken möchtest, was es heute und morgen in der Mensa gibt, kannst du das jederzeit mit /today und /tomorrow tun\\. Falls du Updates von einer anderen Mensa bekommen möchtest, kannst du deine Mensa mit /select ändern \\(Die Mensa Eupener Straße ist der default\\)\\. \n\nMit /stop kannst du dich von diesem Dienst wieder abmelden\\. \n\nBei Rückfragen oder Bugs, schreibe \\@philpinsdorf auf Telegram an\\.`);
+                    ctx.replyWithMarkdownV2(`Danke ${name}, dass du dich für den Dienst angemeldet hast\\! \n\nDu bekommst ab jetzt jeden Tag um \*9:30 Uhr\* eine Benachrichtigung darüber, was es heute in deiner Aachener Mensa zu essen gibt\\. Falls du zwischendurch nachgucken möchtest, was es heute und morgen in der Mensa gibt, kannst du das jederzeit mit /today und /tomorrow tun\\. Falls du Updates von einer anderen Mensa bekommen möchtest, kannst du deine Mensa mit /select ändern\\. Die Mensa Eupener Straße ist standartmäßig am Anfang ausgewählt\\. \n\nMit /stop kannst du dich von diesem Dienst wieder abmelden\\. \n\nBei Rückfragen oder Bugs, schreibe \\@philpinsdorf auf Telegram an\\.`);
 
                 } else {
                     // User already registered
