@@ -113,7 +113,7 @@ export function startBot(): Promise<void> {
                     }
                 }
 
-                ctx.replyWithMarkdownV2(`Deine Mensa wurde erfolgreich auf \*${canteenName}\* geändert! Du erhältst ab sofort tägliche Updates von dieser Mensa.`);
+                ctx.replyWithMarkdownV2(`Deine Mensa wurde erfolgreich auf \*${canteenName}\* geändert\\! Du erhältst ab sofort tägliche Updates von dieser Mensa.`);
             });
         });
 
