@@ -23,7 +23,7 @@ function getDishes($) {
     for(let i = 1; i < (len + 1); i++){
         const type = $(`.active-panel > table.menues > tbody > tr:nth-child(${i}) > td.menue-wrapper > span.menue-item.menue-category`).text(); 
         let desc = $(`.active-panel > table.menues > tbody > tr:nth-child(${i}) > td.menue-wrapper > span.menue-item.menue-desc > span.expand-nutr`).clone().children().remove().end().text(); 
-        desc = desc.split(' | ').map(elem => elem.trim()).map(elem => elem.replace(/-/g, '\\-'));
+        desc = desc.split(' | ').map(elem => elem.trim()).map(elem => elem.replace(/-/g, '\\-')).map(elem => elem.replace(/./g, '\\.'));
         const price = $(`.active-panel > table.menues > tbody > tr:nth-child(${i}) > td.menue-wrapper > span.menue-item.menue-price.large-price`).text(); 
 
         let dish = {
@@ -41,13 +41,13 @@ function getDishes($) {
 function getMainSides($) {
     $('.active-panel > table.extras > tbody > tr:nth-child(1) > td.menue-wrapper > span.menue-item.extra.menue-desc > .seperator').replaceWith(',');
     let mainSides = $('.active-panel > table.extras > tbody > tr:nth-child(1) > td.menue-wrapper > span.menue-item.extra.menue-desc').clone().children().remove().end().text();
-    return mainSides.split(',').map(elem => elem.trim()).map(elem => elem.replace(/-/g, '\\-'));
+    return mainSides.split(',').map(elem => elem.trim()).map(elem => elem.replace(/-/g, '\\-')).map(elem => elem.replace(/./g, '\\.'));
 }
 
 function getFurtherSides($) {
     $('.active-panel > table.extras > tbody > tr:nth-child(2) > td.menue-wrapper > span.menue-item.extra.menue-desc > .seperator').replaceWith(',');
     let mainSides = $('.active-panel > table.extras > tbody > tr:nth-child(2) > td.menue-wrapper > span.menue-item.extra.menue-desc').clone().children().remove().end().text();
-    return mainSides.split(',').map(elem => elem.trim()).map(elem => elem.replace(/-/g, '\\-'));
+    return mainSides.split(',').map(elem => elem.trim()).map(elem => elem.replace(/-/g, '\\-')).map(elem => elem.replace(/./g, '\\.'));
 }
 
 module.exports.scrape = scrape;
