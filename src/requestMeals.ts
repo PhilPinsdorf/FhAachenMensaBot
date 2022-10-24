@@ -2,14 +2,8 @@ import * as request from 'request';
 import * as moment from 'moment';
 import { Meal, Menue, allCanteens } from './global';
 
-let mealsToday: {[key: string]: Menue} = {};
-let mealsTomorrow: {[key: string]: Menue} = {};
-
-test();
-
-async function test() {
-    await loadNewMeals();
-}
+export let mealsToday: {[key: string]: Menue} = {};
+export let mealsTomorrow: {[key: string]: Menue} = {};
 
 export async function loadNewMeals(): Promise<void> {
     const today = moment().format("YYYY-MM-DD");
@@ -22,24 +16,31 @@ export async function loadNewMeals(): Promise<void> {
     const tomorrow = moment().add(nextBusinessDay, 'days').format("YYYY-MM-DD");
 
     mealsToday = await requestMeals(today);
-    console.log(mealsToday);
     mealsTomorrow = await requestMeals(tomorrow);
 
-    return Promise.resolve();
+    return;
 }
 
-// 
 async function requestMeals(date: string): Promise<{ [key: string]: Menue; }> {
     let information: {[key: string]: Menue} = {};
+    let promiseArray: Promise<void>[] = [];
 
     for await (let canteen of allCanteens) {
-        request({uri: `https://openmensa.org/api/v2/canteens/${canteen.api_id}/days/${date}/meals`}, (error, response, body) => { 
-            let json = JSON.parse(body);
-            information[canteen.canteen_id] = createMenue(json);
-        });
+        promiseArray.push(new Promise((resolve, reject) => {
+            request({uri: `https://openmensa.org/api/v2/canteens/${canteen.api_id}/days/${date}/meals`}, (error, response, body) => { 
+                if (error) reject(error);
+
+                let json = JSON.parse(body);
+                information[canteen.canteen_id] = createMenue(json);
+
+                resolve();
+            });
+        }));
     }
 
-    return Promise.resolve(information);
+    await Promise.all(promiseArray);
+
+    return information;
 }
 
 function createMenue(json): Menue {

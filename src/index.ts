@@ -1,11 +1,13 @@
 import { Telegraf } from 'telegraf';
-import {connect } from 'mongoose';
-import express, { Express, Request, Response } from 'express';
-import schedule from 'node-schedule'; 
-import request from 'request';
+import { connect } from 'mongoose';
+import { Express, Request, Response } from 'express';
+import * as express from 'express';
+import * as schedule from 'node-schedule'; 
+import * as request from 'request';
 import { startBot } from './telegramBot';
-import { finalMessages } from './buildMessage';
+import { finalMessagesToday, parseMessages } from './buildMessage';
 import { User } from './global';
+import { loadNewMeals } from './requestMeals';
 
 export const bot = new Telegraf(process.env.BOT_SECRET as string);
 const dbUri = process.env.DB_URI as string;
@@ -24,13 +26,14 @@ async function run() {
 
     app.listen(process.env.PORT || 3000 , () => { console.log('Listen to 3000') });
 
-    // Request Data
-    // Parse Messages
+    await loadNewMeals();
+    parseMessages();
     
     await startBot();
     console.log('Telegram Bot started.')
 
-    schedule.scheduleJob('30 2 * * 1-5', () => { parseToMessage() }) 
+    // -2 Hours because of location of Backend Server
+    schedule.scheduleJob('30 2 * * 1-5', async () => { await loadNewMeals(); parseMessages(); }) 
     console.log('Started Chron Job for updating Message');
 
     schedule.scheduleJob('30 7 * * 1-5', () => { sendMessages() })
@@ -46,9 +49,15 @@ function keepAlive(): void {
     })
 }
 
-export function sendMessage(id: number, name: string, canteen_id: number): void {
-    bot.telegram.sendMessage(id, `Guten Morgen ${name}\\!\n` + finalMessages[canteen_id], { parse_mode: "MarkdownV2" });
-    console.log(`Send Message to user ${id}.`);
+export function sendMessage(id: number, name: string, canteen_id?: number): void {
+    if (canteen_id != null) {
+        bot.telegram.sendMessage(id, `Guten Morgen ${name}\\!(TS)\n` + finalMessagesToday[canteen_id], { parse_mode: "MarkdownV2" });
+        console.log(`Send Message to user ${id}.`);
+    } else {
+        User.findOne({chat_id: id}, function(err, user) {
+            sendMessage(parseInt(user.chat_id), user.name, user.canteen_id);
+        });
+    }
 }
 
 function sendMessages(): void {

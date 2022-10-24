@@ -1,17 +1,24 @@
-import { information } from "./requestMeals";
+import { mealsToday, mealsTomorrow, loadNewMeals } from "./requestMeals";
 import { allCanteens, Menue } from "./global";
 
-const formatter = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
+const formatter = Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
 
 // Object with all completely parsed Messages
-export let finalMessages: {[key: string]: string} = {};
+export let finalMessagesToday: {[key: string]: string} = {};
+export let finalMessagesTomorrow: {[key: string]: string} = {};
+
 
 // Parse all Messages for all canteens
 export function parseMessages() {
     for(let canteen of allCanteens) {
-        let message = parseToMessage(information[canteen.canteen_id], canteen.name);
-        let escaped = escapeMessage(message);
-        finalMessages[canteen.canteen_id] = escaped;
+        console.log(mealsToday[canteen.canteen_id]);
+        let messageToday = parseToMessage(mealsToday[canteen.canteen_id], canteen.name);
+        let escapedToday = escapeMessage(messageToday);
+        finalMessagesToday[canteen.canteen_id] = escapedToday;
+
+        let messageTomorrow = parseToMessage(mealsTomorrow[canteen.canteen_id], canteen.name);
+        let escapedTomorrow = escapeMessage(messageTomorrow);
+        finalMessagesTomorrow[canteen.canteen_id] = escapedTomorrow;
     }
 }
 
@@ -20,11 +27,13 @@ function parseToMessage(menu: Menue, name: string): string{
     let message = `\*Heute gibt es in der ${name}:\* \n\n\n`;
 
     for (let meal of menu.meals) {
-        let price: string = formatter.format(meal.price);
+        let priceString: string = Number(meal.price).toFixed(2).replace('.', ',') + ' €';
         let description: string = createMealDescription(meal.description);
 
         message += `\*${meal.category}:\*\n`;
-        message += `${description} für ${price}`;
+        message += `${description} für ${priceString}`;
+
+        message += '\n\n'
     }
 
     message += `\n`;
@@ -37,7 +46,7 @@ function parseToMessage(menu: Menue, name: string): string{
 
 // Escape all special characters
 function escapeMessage(message: string): string {
-    return message.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return message.replace(/[.+?^${}()|[\]\\]/g, '\\\\$&');
 }
 
 // Create a more readable Menue: abc | def | ghi  =>  abc, def dazu ghi
