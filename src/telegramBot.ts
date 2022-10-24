@@ -51,7 +51,7 @@ export function startBot(): Promise<void> {
         });
 
         // If user requests Data, send it to him
-        bot.command('request', async (ctx) => {
+        bot.command(['request', 'today'], async (ctx) => {
             const id = ctx.message.chat.id;
             const name = sanitize(ctx.message.from.first_name);
 
