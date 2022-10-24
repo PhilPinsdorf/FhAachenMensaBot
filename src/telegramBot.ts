@@ -111,10 +111,10 @@ export function startBot(): Promise<void> {
             });
         });
 
-        const regex = new RegExp(/test (.+)/i)
         bot.action(/canteen-([1-6])/g, (ctx) => {
-            ctx.editMessageText('🎉 Awesome! 🎉' + ctx.match[0][0]);
-            /*
+            const id = ctx.chat.id;      
+            const canteen_id = ctx.match[0][8];
+            
             User.findOneAndUpdate({chat_id: id}, {canteen_id: canteen_id}, function (err, result) {
                 if (err) { throw err }
 
@@ -132,8 +132,8 @@ export function startBot(): Promise<void> {
                     }
                 }
 
-                ctx.replyWithMarkdownV2(`Deine Mensa wurde erfolgreich auf die \*${canteenName}\* geändert\\! Du erhältst ab sofort tägliche Updates von dieser Mensa\\.`);
-            });*/
+                ctx.editMessageText(`Deine Mensa wurde erfolgreich auf die \*${canteenName}\* geändert\\! Du erhältst ab sofort tägliche Updates von dieser Mensa\\.`);
+            });
         });
 
         bot.launch();
