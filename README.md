@@ -1,4 +1,6 @@
 # FH Aachen Mensa Bot
+<img src="https://img.shields.io/tokei/lines/github/philpinsdorf/fhaachenmensabot?label=Lines%20of%20Code&style=for-the-badge">
+
 A small Telegram bot that will send you a message with the canteen meals of the day. \
 Created during another boring TI lecture. \
 Feel free to create pull-requests.
