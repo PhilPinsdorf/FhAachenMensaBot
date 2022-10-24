@@ -65,6 +65,7 @@ const userShema = new Schema({
   },
   canteen_id : {
     type: Number,
+    default: 5,
     required: true
   }
 });

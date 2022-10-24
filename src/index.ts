@@ -14,7 +14,7 @@ const dbUri = process.env.DB_URI as string;
 const app: Express = express();
 
 app.get('/keepAlive', (req: Request, res: Response) => {
-    res.send('Received keep Alive Ping.');
+    res.send('Send keep Alive Ping.');
     res.end();
 });
 
@@ -41,17 +41,20 @@ async function run() {
 
     schedule.scheduleJob('*/10 * * * *', () => { keepAlive() }) 
     console.log('Started Chron Job for keeping Alive Backend');
+
+    // Send one keep Alive Ping at beginning
+    keepAlive();
 }
 
 function keepAlive(): void {
-    request('https://fhaachenmensabot.herokuapp.com/keepAlive', (err, res, body) => {
-        console.log(res);
+    request('https://aachenmensabot.herokuapp.com/keepAlive', (err, res, body) => {
+        console.log('Received Keep Alive Ping.');
     })
 }
 
 export function sendMessage(id: number, name: string, canteen_id?: number): void {
     if (canteen_id != null) {
-        bot.telegram.sendMessage(id, `Guten Morgen ${name}\\! TS\n` + finalMessagesToday[canteen_id], { parse_mode: "MarkdownV2" });
+        bot.telegram.sendMessage(id, `Guten Morgen ${name}\\!\n` + finalMessagesToday[canteen_id], { parse_mode: "MarkdownV2" });
         console.log(`Send Message to user ${id}.`);
     } else {
         User.findOne({chat_id: id}, function(err, user) {
