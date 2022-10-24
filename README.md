@@ -19,7 +19,7 @@ You'll get all relevant information through the bot.
 - [x] Clean up code
 - [x] Sanitize usernames
 - [x] Rewrite in TypeScript
-- [ ] Select your canteen
+- [x] Select your canteen
 - [x] Add all canteens in Aachen
 - [x] Get tomorrows Meals
 - [ ] ~~Evaluate meals (?)~~
