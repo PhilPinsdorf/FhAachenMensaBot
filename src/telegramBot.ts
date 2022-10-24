@@ -91,7 +91,7 @@ export function startBot(): Promise<void> {
             const commandArguments: string[] = ctx.update.message.text.split(' ');
             const canteen_id = commandArguments[1];
 
-            if(isNaN(Number(canteen_id)) || Number(canteen_id) < 1 || Number(canteen_id) > 6) {
+            if(canteen_id && (isNaN(Number(canteen_id)) || Number(canteen_id) < 1 || Number(canteen_id) > 6)) {
                 ctx.reply('Der Command ist so nicht gültig! Bitte wähle eine der Mensen aus!');
                 return;
             }
