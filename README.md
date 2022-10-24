@@ -1,6 +1,6 @@
 # FH Aachen Mensa Bot
 <div>
-  <img src="https://img.shields.io/tokei/lines/github/philpinsdorf/fhaachenmensabot?label=Lines%20of%20Code&style=for-the-badge">
+  <img alt="Lines of code" src="https://img.shields.io/tokei/lines/github/philpinsdorf/fhaachenmensabot?label=Lines%20of%20Code&style=for-the-badge">
   <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/philpinsdorf/fhaachenmensabot?style=for-the-badge">
   <img alt="GitHub" src="https://img.shields.io/github/license/philpinsdorf/fhaachenmensabot?color=red&style=for-the-badge">
 </div>  
