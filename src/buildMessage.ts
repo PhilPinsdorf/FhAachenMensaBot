@@ -21,6 +21,8 @@ export function parseMessages() {
         finalMessages['tomorrow'] = {};
         finalMessages['tomorrow'][canteen.canteen_id] = escapedTomorrow;
     }
+
+    console.log(finalMessages);
 }
 
 // Create Message from parsed Information
