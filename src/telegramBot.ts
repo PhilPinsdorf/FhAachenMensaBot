@@ -90,9 +90,19 @@ export function startBot(): Promise<void> {
             const id = ctx.message.chat.id;
             const commandArguments: string[] = ctx.update.message.text.split(' ');
             const canteen_id = commandArguments[1];
+
+            if(isNaN(Number(canteen_id)) || Number(canteen_id) < 1 || Number(canteen_id) > 6) {
+                ctx.reply('Der Command ist so nicht gültig! Bitte wähle eine der Mensen aus!');
+                return;
+            }
             
             if(!canteen_id){
-                ctx.reply('Der Command ist so nicht gultig!');
+                let text: string = `\*Wähle deine Mensa aus:\*\n\n`;
+                for(let canteen of allCanteens) {
+                    text += `\*${canteen.name}:\* [/select ${canteen.canteen_id}] \n`;
+                }
+
+                ctx.replyWithMarkdownV2(text);
                 return;
             }
 
@@ -113,7 +123,7 @@ export function startBot(): Promise<void> {
                     }
                 }
 
-                ctx.replyWithMarkdownV2(`Deine Mensa wurde erfolgreich auf \*${canteenName}\* geändert\\! Du erhältst ab sofort tägliche Updates von dieser Mensa\\.`);
+                ctx.replyWithMarkdownV2(`Deine Mensa wurde erfolgreich auf die \*${canteenName}\* geändert\\! Du erhältst ab sofort tägliche Updates von dieser Mensa\\.`);
             });
         });
 
