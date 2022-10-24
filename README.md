@@ -11,8 +11,8 @@ You'll get all relevant information through the bot.
 # Commands
 - /start => Subscribe for daily canteen updates
 - /stop => Unsubscribe from daily canteen updates
-- /request => Immediately sends you todays meals
-- /tomorrow => Coming Soon
+- /request or /today => Immediately sends you todays meals
+- /tomorrow => Immediately sends you tomorrows meals
 - /select => Coming Soon
 
 # ToDo
@@ -21,7 +21,7 @@ You'll get all relevant information through the bot.
 - [x] Rewrite in TypeScript
 - [ ] Select your canteen
 - [x] Add all canteens in Aachen
-- [ ] Get tomorrows Meals
+- [x] Get tomorrows Meals
 - [ ] ~~Evaluate meals (?)~~
 
 # Attention
