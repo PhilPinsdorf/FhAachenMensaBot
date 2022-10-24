@@ -89,18 +89,17 @@ export function startBot(): Promise<void> {
         });
 
         bot.command('select', (ctx) => {
-            const id = ctx.message.chat.id;
-            const commandArguments: string[] = ctx.update.message.text.split(' ');
-            const canteen_id = commandArguments[1];
+            const id = ctx.message.chat.id;            
+            let buttons: [InlineKeyboardButton][] = [];
 
-            if(canteen_id && (isNaN(Number(canteen_id)) || Number(canteen_id) < 1 || Number(canteen_id) > 6)) {
-                ctx.reply('Der Command ist so nicht gültig! Bitte wähle eine der Mensen aus!');
-                return;
-            }
-            
-            if(!canteen_id){
-                let text: string = `\*Wähle deine Mensa aus:\*\n\n`;
-                let buttons: [InlineKeyboardButton][] = [];
+            User.findOne({chat_id: id}, function (err, result) {
+                if (err) { throw err }
+
+                if(!result) {
+                    ctx.reply('Du musst diesen Dienst erst mit /start abbonieren!');
+                    console.log(`Non existent User ${id} tried to read Tomrrows Menu!`);
+                    return;
+                }
 
                 for(let canteen of allCanteens) {
                     buttons.push([Markup.button.callback(canteen.name, `canteen-${canteen.canteen_id}`)]);
@@ -108,10 +107,14 @@ export function startBot(): Promise<void> {
 
                 const inlineMessageKeyboard = Markup.inlineKeyboard(buttons);
 
-                ctx.replyWithMarkdownV2(text, inlineMessageKeyboard);
-                return;
-            }
+                ctx.replyWithMarkdownV2(`\*Wähle deine Mensa aus:\*`, inlineMessageKeyboard);
+            });
+        });
 
+        const regex = new RegExp(/test (.+)/i)
+        bot.action(/canteen-([1-6])/g, (ctx) => {
+            ctx.editMessageText('🎉 Awesome! 🎉' + ctx.match[0]);
+            /*
             User.findOneAndUpdate({chat_id: id}, {canteen_id: canteen_id}, function (err, result) {
                 if (err) { throw err }
 
@@ -130,7 +133,7 @@ export function startBot(): Promise<void> {
                 }
 
                 ctx.replyWithMarkdownV2(`Deine Mensa wurde erfolgreich auf die \*${canteenName}\* geändert\\! Du erhältst ab sofort tägliche Updates von dieser Mensa\\.`);
-            });
+            });*/
         });
 
         bot.launch();
