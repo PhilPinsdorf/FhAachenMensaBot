@@ -130,7 +130,7 @@ process.once("SIGINT", () => bot.stop("SIGINT"));
 process.once("SIGTERM", () => bot.stop("SIGTERM"));
 
 function sendMessage(id, name) {
-    bot.telegram.sendMessage(id, `Guten Morgen ${name}\\!\n` + message, { parse_mode: "MarkdownV2" });
+    bot.telegram.sendMessage(id, `Guten Morgen ${name}!\n` + message);
     console.log(`Send Message to user ${id}.`);
 }
 
@@ -144,12 +144,12 @@ function sendMessages() {
 
 function parseToMessage(callback){
     scraper.scrape().then((foodSelection) => {
-        let header = `\*Heute gibt es in der Mensa:\* \n\n\n`;
+        let header = `Heute gibt es in der Mensa: \n\n\n`;
         let body = ``;
 
         foodSelection.dishes.forEach((dish) => {
             let text = ``;
-            text += `\*${dish.type}\*\\:\n`;
+            text += `${dish.type}:\n`;
 
             let len = dish.desc.length;
             dish.desc.forEach((ingredient) => {
@@ -163,15 +163,15 @@ function parseToMessage(callback){
                 len--;
             });
 
-            text += ` für \*${dish.price}\*\n\n`;
+            text += ` für ${dish.price}\n\n`;
 
             body += text;
         });
 
         body += `\n`;
 
-        body += `\*Hauptbeilagen\*\\:\n${foodSelection.sides[0]} oder ${foodSelection.sides[1]}\n\n`;
-        body += `\*Nebenbeilage\*\\:\n${foodSelection.vegetables[0]} oder ${foodSelection.vegetables[1]}`;
+        body += `Hauptbeilagen:\n${foodSelection.sides[0]} oder ${foodSelection.sides[1]}\n\n`;
+        body += `Nebenbeilage:\n${foodSelection.vegetables[0]} oder ${foodSelection.vegetables[1]}`;
 
         header += body;
 
