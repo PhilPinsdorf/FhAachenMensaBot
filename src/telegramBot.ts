@@ -1,6 +1,8 @@
 import { bot, sendMessage } from ".";
 import { allCanteens, User } from './global';
 import * as sanitize from "mongo-sanitize";
+import { Markup } from "telegraf";
+import { InlineKeyboardButton } from "typegram";
 
 // Returns a promise, that starts the bot
 export function startBot(): Promise<void> {
@@ -98,11 +100,15 @@ export function startBot(): Promise<void> {
             
             if(!canteen_id){
                 let text: string = `\*Wähle deine Mensa aus:\*\n\n`;
+                let buttons: InlineKeyboardButton[] = [];
+
                 for(let canteen of allCanteens) {
-                    text += `\*${canteen.name}:\* /\{select ${canteen.canteen_id}\} \n`;
+                    buttons.push(Markup.button.callback(canteen.name, `canteen-${canteen.canteen_id}`));
                 }
 
-                ctx.replyWithMarkdownV2(text);
+                const inlineMessageKeyboard = Markup.inlineKeyboard(buttons);
+
+                ctx.replyWithMarkdownV2(text, inlineMessageKeyboard);
                 return;
             }
 
