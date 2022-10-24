@@ -1,6 +1,6 @@
 import { bot, sendMessage } from ".";
 import { User } from './global';
-import sanitize from "mongo-sanitize";
+import * as sanitize from "mongo-sanitize";
 
 // Returns a promise, that starts the bot
 export function startBot(): Promise<void> {

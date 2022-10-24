@@ -1,4 +1,4 @@
-import { mealsToday, mealsTomorrow, loadNewMeals } from "./requestMeals";
+import { mealsToday, mealsTomorrow } from "./requestMeals";
 import { allCanteens, Menue } from "./global";
 
 const formatter = Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
