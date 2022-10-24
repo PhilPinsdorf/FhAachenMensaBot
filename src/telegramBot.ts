@@ -113,7 +113,7 @@ export function startBot(): Promise<void> {
 
         const regex = new RegExp(/test (.+)/i)
         bot.action(/canteen-([1-6])/g, (ctx) => {
-            ctx.editMessageText('🎉 Awesome! 🎉' + ctx.match[0]);
+            ctx.editMessageText('🎉 Awesome! 🎉' + ctx.match[0][0]);
             /*
             User.findOneAndUpdate({chat_id: id}, {canteen_id: canteen_id}, function (err, result) {
                 if (err) { throw err }
