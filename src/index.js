@@ -41,6 +41,8 @@ mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true })
                     startBot((result) => {
                         console.log('Started Telegram Bot');
 
+                        sendMessages();
+
                         // Chron Jobs jeweils minus 2 Stunden wegen anderer Zeitzone
 
                         schedule.scheduleJob('30 7 * * 1-5', () => { sendMessages() })
