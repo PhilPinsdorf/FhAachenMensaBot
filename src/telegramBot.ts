@@ -100,10 +100,10 @@ export function startBot(): Promise<void> {
             
             if(!canteen_id){
                 let text: string = `\*Wähle deine Mensa aus:\*\n\n`;
-                let buttons: InlineKeyboardButton[] = [];
+                let buttons: [InlineKeyboardButton][] = [];
 
                 for(let canteen of allCanteens) {
-                    buttons.push(Markup.button.callback(canteen.name, `canteen-${canteen.canteen_id}`));
+                    buttons.push([Markup.button.callback(canteen.name, `canteen-${canteen.canteen_id}`)]);
                 }
 
                 const inlineMessageKeyboard = Markup.inlineKeyboard(buttons);
