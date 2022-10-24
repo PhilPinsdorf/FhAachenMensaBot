@@ -45,7 +45,7 @@ function parseToMessage(menu: Menue, name: string): string{
 
 // Escape all special characters
 function escapeMessage(message: string): string {
-    return message.replace(/[.+?^${}()|[\]\\]/g, '\\\\$&');
+    return message.replace(/[.-+?^${}()|[\]\\]/g, '\\\\$&');
 }
 
 // Create a more readable Menue: abc | def | ghi  =>  abc, def dazu ghi

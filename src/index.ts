@@ -45,7 +45,7 @@ async function run() {
 
 function keepAlive(): void {
     request('https://fhaachenmensabot.herokuapp.com/keepAlive', (err, res, body) => {
-        console.log(res.body);
+        console.log(res);
     })
 }
 
