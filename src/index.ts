@@ -5,7 +5,7 @@ import * as express from 'express';
 import * as schedule from 'node-schedule'; 
 import * as request from 'request';
 import { startBot } from './telegramBot';
-import { finalMessagesToday, parseMessages } from './buildMessage';
+import { parseMessages, finalMessages } from './buildMessage';
 import { User } from './global';
 import { loadNewMeals } from './requestMeals';
 
@@ -52,13 +52,13 @@ function keepAlive(): void {
     })
 }
 
-export function sendMessage(id: number, name: string, canteen_id?: number): void {
+export function sendMessage(id: number, name: string, messageType: string , canteen_id?: number): void {
     if (canteen_id != null) {
-        bot.telegram.sendMessage(id, `Guten Morgen ${name}\\!\n` + finalMessagesToday[canteen_id], { parse_mode: "MarkdownV2" });
+        bot.telegram.sendMessage(id, `Guten Morgen ${name}\\!\n` + finalMessages[messageType][canteen_id], { parse_mode: "MarkdownV2" });
         console.log(`Send Message to user ${id}.`);
     } else {
         User.findOne({chat_id: id}, function(err, user) {
-            sendMessage(parseInt(user.chat_id), user.name, user.canteen_id);
+            sendMessage(parseInt(user.chat_id), user.name, messageType, user.canteen_id);
         });
     }
 }
@@ -66,7 +66,7 @@ export function sendMessage(id: number, name: string, canteen_id?: number): void
 function sendMessages(): void {
     User.find({}, function(err, users) {
         users.forEach((user) => {
-            sendMessage(parseInt(user.chat_id), user.name, user.canteen_id);
+            sendMessage(parseInt(user.chat_id), user.name, 'today', user.canteen_id);
         });
     });
 }

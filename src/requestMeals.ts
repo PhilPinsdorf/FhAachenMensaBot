@@ -6,14 +6,27 @@ export let mealsToday: {[key: string]: Menue} = {};
 export let mealsTomorrow: {[key: string]: Menue} = {};
 
 export async function loadNewMeals(): Promise<void> {
-    const today = moment().format("YYYY-MM-DD");
-    let nextBusinessDay: number = 1;
+    let today: string;
+    let tomorrow: string;
 
-    if(moment().day() == 5) {
-        nextBusinessDay = 3;
+    switch (moment().day()) {
+        case 5:
+            today = moment().format("YYYY-MM-DD");
+            tomorrow = moment().add(3, 'days').format("YYYY-MM-DD");
+            break;
+        case 6:
+            today = moment().add(2, 'days').format("YYYY-MM-DD");
+            tomorrow = moment().add(2, 'days').format("YYYY-MM-DD");
+            break;
+        case 7:
+            today = moment().add(1, 'days').format("YYYY-MM-DD");
+            tomorrow = moment().add(1, 'days').format("YYYY-MM-DD");
+            break;
+        default:
+            today = moment().format("YYYY-MM-DD");
+            tomorrow = moment().add(1, 'days').format("YYYY-MM-DD");
+            break;
     }
-
-    const tomorrow = moment().add(nextBusinessDay, 'days').format("YYYY-MM-DD");
 
     mealsToday = await requestMeals(today);
     mealsTomorrow = await requestMeals(tomorrow);

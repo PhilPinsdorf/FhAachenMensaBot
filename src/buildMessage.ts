@@ -1,29 +1,34 @@
 import { mealsToday, mealsTomorrow } from "./requestMeals";
 import { allCanteens, Menue } from "./global";
+import * as moment from 'moment';
 
-const formatter = Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
 
 // Object with all completely parsed Messages
-export let finalMessagesToday: {[key: string]: string} = {};
-export let finalMessagesTomorrow: {[key: string]: string} = {};
-
+export let finalMessages: {[key: string]: {[key: string]: string}} = {};
 
 // Parse all Messages for all canteens
 export function parseMessages() {
     for(let canteen of allCanteens) {
-        let messageToday = parseToMessage(mealsToday[canteen.canteen_id], canteen.name);
+        let messageToday = parseToMessage(mealsToday[canteen.canteen_id], canteen.name, false);
         let escapedToday = escapeMessage(messageToday);
-        finalMessagesToday[canteen.canteen_id] = escapedToday;
+        finalMessages['today'][canteen.canteen_id] = escapedToday;
 
-        let messageTomorrow = parseToMessage(mealsTomorrow[canteen.canteen_id], canteen.name);
+        let messageTomorrow = parseToMessage(mealsTomorrow[canteen.canteen_id], canteen.name, true);
         let escapedTomorrow = escapeMessage(messageTomorrow);
-        finalMessagesTomorrow[canteen.canteen_id] = escapedTomorrow;
+        finalMessages['tomorrow'][canteen.canteen_id] = escapedTomorrow;
     }
 }
 
 // Create Message from parsed Information
-function parseToMessage(menu: Menue, name: string): string{
-    let message = `\*Heute gibt es in der ${name}:\* \n\n\n`;
+function parseToMessage(menu: Menue, name: string, writeDay: boolean): string{
+    let message: string = ``;
+    if(writeDay) {
+        message += getDay();
+    } else {
+        message += `Heute`;
+    }
+
+    message += `\* gibt es in der ${name}:\* \n\n\n`;
 
     for (let meal of menu.meals) {
         let priceString: string = Number(meal.price).toFixed(2).replace('.', ',') + ' €';
@@ -71,4 +76,23 @@ function createMealDescription(description: string): string {
     }
 
     return text;
+}
+
+function getDay(): string {
+    let day: string;
+
+    moment.locale('de')
+    switch (moment().day()) {
+        case 5:
+            day = moment().add(3, 'days').format("dddd");
+            break;
+        case 6:
+            day = moment().add(2, 'days').format("dddd");
+            break;
+        default:
+            day = moment().add(1, 'days').format("dddd");
+            break;
+    }
+
+    return day;
 }
