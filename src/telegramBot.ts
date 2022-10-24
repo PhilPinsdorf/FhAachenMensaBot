@@ -99,7 +99,7 @@ export function startBot(): Promise<void> {
             if(!canteen_id){
                 let text: string = `\*Wähle deine Mensa aus:\*\n\n`;
                 for(let canteen of allCanteens) {
-                    text += `\*${canteen.name}:\* [/select ${canteen.canteen_id}] \n`;
+                    text += `\*${canteen.name}:\* /{select ${canteen.canteen_id}} \n`;
                 }
 
                 ctx.replyWithMarkdownV2(text);
