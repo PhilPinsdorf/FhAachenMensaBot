@@ -54,22 +54,36 @@ export function startBot(): Promise<void> {
         bot.command('request', async (ctx) => {
             const id = ctx.message.chat.id;
             const name = sanitize(ctx.message.from.first_name);
-            if(await userExists(id + "")) {
+
+            User.findOne({chat_id: id}, function (err, result) {
+                if (err) { throw err }
+
+                if(!result) {
+                    ctx.reply('Du musst diesen Dienst erst mit /start abbonieren!');
+                    console.log(`Non existent User ${id} tried to read Todays Menu!`);
+                    return;
+                }
+
                 sendMessage(id, name, 'today');
-            } else {
-                ctx.reply('Du musst diesen Dienst erst mit /start abbonieren!');
-            }
+            });
         });
 
         // If user requests Tomorrow, send it to him
         bot.command('tomorrow', async (ctx) => {
             const id = ctx.message.chat.id;
             const name = sanitize(ctx.message.from.first_name);
-            if(await userExists(id + "")) {
+
+            User.findOne({chat_id: id}, function (err, result) {
+                if (err) { throw err }
+
+                if(!result) {
+                    ctx.reply('Du musst diesen Dienst erst mit /start abbonieren!');
+                    console.log(`Non existent User ${id} tried to read Tomrrows Menu!`);
+                    return;
+                }
+
                 sendMessage(id, name, 'tomorrow');
-            } else {
-                ctx.reply('Du musst diesen Dienst erst mit /start abbonieren!');
-            }
+            });
         });
 
         bot.launch();
@@ -81,18 +95,7 @@ export function startBot(): Promise<void> {
 async function userExists(id: string): Promise<boolean> {
     let bool: boolean;
 
-    await User.findOne({chat_id: id}, (err, result) => {
-        if (err) { throw err }
-
-        if(!result) {
-            bool = false;
-            console.log('User doesn\'t exist!');
-            return;
-        }
-
-        bool = true;
-        console.log('User exists!');
-    });
+    
 
     return bool;
 }
