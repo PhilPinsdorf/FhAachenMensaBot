@@ -1,3 +1,5 @@
+import {Schema, model} from 'mongoose';
+
 export interface Canteen { 
     name: string; 
     api_id: number; 
@@ -48,3 +50,23 @@ export let allCanteens: Canteen[] = [
         canteen_id: 6,
     },
 ];
+
+const userShema = new Schema({
+  chat_id: { 
+    type: String,
+    required: true
+  },
+  name: {
+    type: String
+  },
+  joined: {
+    type: Date,
+    default: Date.now
+  },
+  canteen_id : {
+    type: Number,
+    required: true
+  }
+});
+
+export const User = model('User', userShema);
