@@ -1,7 +1,6 @@
 import { bot, sendMessage } from ".";
 import { User } from './global';
 import * as sanitize from "mongo-sanitize";
-import { boolean } from "webidl-conversions";
 
 // Returns a promise, that starts the bot
 export function startBot(): Promise<void> {
@@ -52,10 +51,10 @@ export function startBot(): Promise<void> {
         });
 
         // If user requests Data, send it to him
-        bot.command('request', (ctx) => {
+        bot.command('request', async (ctx) => {
             const id = ctx.message.chat.id;
             const name = sanitize(ctx.message.from.first_name);
-            if(userExists(id + "")) {
+            if(await userExists(id + "")) {
                 sendMessage(id, name, 'today');
             } else {
                 ctx.reply('Du musst diesen Dienst erst mit /start abbonieren!');
@@ -63,10 +62,10 @@ export function startBot(): Promise<void> {
         });
 
         // If user requests Tomorrow, send it to him
-        bot.command('tomorrow', (ctx) => {
+        bot.command('tomorrow', async (ctx) => {
             const id = ctx.message.chat.id;
             const name = sanitize(ctx.message.from.first_name);
-            if(userExists(id + "")) {
+            if(await userExists(id + "")) {
                 sendMessage(id, name, 'tomorrow');
             } else {
                 ctx.reply('Du musst diesen Dienst erst mit /start abbonieren!');
@@ -79,10 +78,10 @@ export function startBot(): Promise<void> {
     });
 }
 
-function userExists(id: string): boolean {
+async function userExists(id: string): Promise<boolean> {
     let bool: boolean;
 
-    User.findOne({chat_id: id}, (err, result) => {
+    await User.findOne({chat_id: id}, (err, result) => {
         if (err) { throw err }
 
         if(!result) {
