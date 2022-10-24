@@ -1,5 +1,5 @@
 import { bot, sendMessage } from ".";
-import { User } from './global';
+import { allCanteens, User } from './global';
 import * as sanitize from "mongo-sanitize";
 
 // Returns a promise, that starts the bot
@@ -83,6 +83,37 @@ export function startBot(): Promise<void> {
                 }
 
                 sendMessage(id, name, 'tomorrow');
+            });
+        });
+
+        bot.command('select', (ctx) => {
+            const id = ctx.message.chat.id;
+            const commandArguments: string[] = ctx.update.message.text.split(' ');
+            const canteen_id = commandArguments[1];
+            
+            if(!canteen_id){
+                ctx.reply('Der Command ist so nicht gultig!');
+                return;
+            }
+
+            User.findOneAndUpdate({chat_id: id}, {canteen_id: canteen_id}, function (err, result) {
+                if (err) { throw err }
+
+                if(!result) {
+                    ctx.reply('Du musst diesen Dienst erst mit /start abbonieren!');
+                    console.log(`Non existent User ${id} tried to update Canteen ID!`);
+                    return;
+                }
+
+                let canteenName: string;
+                for(let canteen of allCanteens) {
+                    if(canteen.canteen_id == Number(canteen_id)) {
+                        canteenName = canteen.name;
+                        break;
+                    }
+                }
+
+                ctx.replyWithMarkdownV2(`Deine Mensa wurde erfolgreich auf \*${canteenName}\* geändert! Du erhältst ab sofort tägliche Updates von dieser Mensa.`);
             });
         });
 
