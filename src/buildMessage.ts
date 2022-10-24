@@ -9,20 +9,18 @@ export let finalMessages: {[key: string]: {[key: string]: string}} = {};
 // Parse all Messages for all canteens
 export function parseMessages() {
     finalMessages = {};
+    finalMessages['today'] = {};
+    finalMessages['tomorrow'] = {};
 
     for(let canteen of allCanteens) {
         let messageToday = parseToMessage(mealsToday[canteen.canteen_id], canteen.name, false);
         let escapedToday = escapeMessage(messageToday);
-        finalMessages['today'] = {};
         finalMessages['today'][canteen.canteen_id] = escapedToday;
 
         let messageTomorrow = parseToMessage(mealsTomorrow[canteen.canteen_id], canteen.name, true);
         let escapedTomorrow = escapeMessage(messageTomorrow);
-        finalMessages['tomorrow'] = {};
         finalMessages['tomorrow'][canteen.canteen_id] = escapedTomorrow;
     }
-
-    console.log(finalMessages);
 }
 
 // Create Message from parsed Information
