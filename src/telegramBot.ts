@@ -79,10 +79,10 @@ export function startBot(): Promise<void> {
     });
 }
 
-async function userExists(id: string): Promise<boolean> {
+function userExists(id: string): boolean {
     let bool: boolean;
 
-    await User.findOne({chat_id: id}, (err, result) => {
+    User.findOne({chat_id: id}, (err, result) => {
         if (err) { throw err }
 
         if(!result) {
