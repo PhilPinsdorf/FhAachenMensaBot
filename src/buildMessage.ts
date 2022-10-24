@@ -11,7 +11,6 @@ export let finalMessagesTomorrow: {[key: string]: string} = {};
 // Parse all Messages for all canteens
 export function parseMessages() {
     for(let canteen of allCanteens) {
-        console.log(mealsToday[canteen.canteen_id]);
         let messageToday = parseToMessage(mealsToday[canteen.canteen_id], canteen.name);
         let escapedToday = escapeMessage(messageToday);
         finalMessagesToday[canteen.canteen_id] = escapedToday;
