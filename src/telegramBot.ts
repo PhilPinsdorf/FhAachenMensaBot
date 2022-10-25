@@ -111,6 +111,10 @@ export function startBot(): Promise<void> {
             });
         });
 
+        bot.command('share', (ctx) => {
+            ctx.replyWithPhoto({ source: './img/qrcode.png' });
+        });
+
         bot.action(/canteen-([1-6])/g, (ctx) => {
             const id = ctx.chat.id;      
             const canteen_id = ctx.match[0][8];
@@ -140,12 +144,4 @@ export function startBot(): Promise<void> {
 
         resolve();
     });
-}
-
-async function userExists(id: string): Promise<boolean> {
-    let bool: boolean;
-
-    
-
-    return bool;
 }
