@@ -21,7 +21,7 @@ You'll get all relevant information through the bot.
 - /stop => Unsubscribe from daily canteen updates
 - /request or /today => Immediately sends you todays meals
 - /tomorrow => Immediately sends you tomorrows meals
-- /select => Coming Soon
+- /select => Select your canteen
 
 # ToDo
 - [x] Clean up code
