@@ -53,8 +53,8 @@ function parseToMessage(menu: Menue, name: string, writeDay: boolean): string{
 }
 
 // Escape all special characters
-function escapeMessage(message: string): string {
-    return message.replace(/[.\-+?^${}()|[\]\\]/g, '\\$&');
+export function escapeMessage(message: string): string {
+    return message.replace(/[.\-_+?^${}()|[\]\\]/g, '\\$&');
 }
 
 // Create a more readable Menue: abc | def | ghi  =>  abc, def dazu ghi

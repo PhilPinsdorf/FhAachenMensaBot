@@ -5,7 +5,7 @@ import * as express from 'express';
 import * as schedule from 'node-schedule'; 
 import * as request from 'request';
 import { startBot } from './telegramBot';
-import { parseMessages, finalMessages } from './buildMessage';
+import { parseMessages, finalMessages, escapeMessage } from './buildMessage';
 import { User } from './global';
 import { loadNewMeals } from './requestMeals';
 
@@ -31,6 +31,7 @@ async function run() {
     
     await startBot();
     console.log('Telegram Bot started.')
+
     // -2 Hours because of location of Backend Server
     schedule.scheduleJob('30 2 * * 1-5', async () => { await loadNewMeals(); parseMessages(); }) 
     console.log('Started Chron Job for updating Message');
@@ -53,7 +54,7 @@ function keepAlive(): void {
 
 export function sendMessage(id: number, name: string, messageType: string , canteen_id?: number): void {
     if (canteen_id != null) {
-        bot.telegram.sendMessage(id, `Guten Tag ${name}\\!\n` + finalMessages[messageType][canteen_id], { parse_mode: "MarkdownV2" });
+        bot.telegram.sendMessage(id, `Guten Tag ${escapeMessage(name)}\\!\n` + finalMessages[messageType][canteen_id], { parse_mode: "MarkdownV2" });
         console.log(`Send Message ${messageType} to user ${id}.`);
     } else {
         User.findOne({chat_id: id}, function(err, user) {
