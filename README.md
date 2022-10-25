@@ -8,6 +8,7 @@
 </br>
 
 A small Telegram bot that will send you a message with the canteen meals of the day. \
+Now working for all Canteens in Aachen. \
 Created during another boring TI lecture. \
 Feel free to create pull-requests.
 
@@ -17,11 +18,15 @@ Press on **Start** \
 You'll get all relevant information through the bot.
 
 # Commands
-- /start => Subscribe for daily canteen updates
-- /stop => Unsubscribe from daily canteen updates
-- /request or /today => Immediately sends you todays meals
-- /tomorrow => Immediately sends you tomorrows meals
-- /select => Select your canteen
+| Command | Description |
+|---|---|
+| /start | Subscribe for daily canteen updates. |
+| /stop | Unsubscribe from daily canteen updates. |
+| /request | Immediately sends you todays meals. |
+| /today | Immediately sends you todays meals. |
+| /tomorrow | Immediately sends you tomorrows meals. |
+| /select | Select your canteen. |
+| /share | Get QR-Code for sharing the Bot. |
 
 # ToDo
 - [x] Clean up code
@@ -30,6 +35,7 @@ You'll get all relevant information through the bot.
 - [x] Select your canteen
 - [x] Add all canteens in Aachen
 - [x] Get tomorrows Meals
+- [x] Request QR-Code for sharing
 
 # Attention
 The new meals are loaded at 4:30am. Any requests before that time will give you yesterdays meals.
