@@ -32,6 +32,8 @@ async function run() {
     await startBot();
     console.log('Telegram Bot started.')
 
+    sendMessages();
+
     // -2 Hours because of location of Backend Server
     schedule.scheduleJob('30 2 * * 1-5', async () => { await loadNewMeals(); parseMessages(); }) 
     console.log('Started Chron Job for updating Message');
