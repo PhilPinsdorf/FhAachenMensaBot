@@ -115,6 +115,10 @@ export function startBot(): Promise<void> {
             ctx.replyWithPhoto({ source: './img/qrcode.png' });
         });
 
+        bot.command('code', (ctx) => {
+            ctx.reply('https://github.com/PhilPinsdorf/FhAachenMensaBot');
+        });
+
         bot.action(/canteen-([1-6])/g, (ctx) => {
             const id = ctx.chat.id;      
             const canteen_id = ctx.match[0][8];
