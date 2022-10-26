@@ -141,7 +141,7 @@ export function startBot(): Promise<void> {
                 }
 
                 if(result.canteen_id == canteen_id) {
-                    ctx.editMessageText(`Deine Mensa hat sich nicht verändert! Du erhältst weiterhin Updates für die \*${canteenName}\*\\!`, { parse_mode: 'MarkdownV2' });
+                    ctx.editMessageText(`Deine Mensa hat sich nicht verändert\\! Du erhältst weiterhin Updates für die \*${canteenName}\*\\!`, { parse_mode: 'MarkdownV2' });
                     return;
                 }
 
