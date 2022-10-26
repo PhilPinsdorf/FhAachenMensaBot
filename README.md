@@ -27,6 +27,7 @@ You'll get all relevant information through the bot.
 | /tomorrow | Immediately sends you tomorrows meals. |
 | /select | Select your canteen. |
 | /share | Get QR-Code for sharing the Bot. |
+| /code | Get Link to GitHub repo. |
 
 # ToDo
 - [x] Clean up code

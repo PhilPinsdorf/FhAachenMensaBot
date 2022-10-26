@@ -1,7 +1,7 @@
 tsconfig.json
 package.json
 package-lock.json
-README.MD
+README.md
 Procfile
 LICENSE.md
 .gitignore
