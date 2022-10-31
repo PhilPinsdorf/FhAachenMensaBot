@@ -15,7 +15,7 @@
     "express": "^4.18.2",
     "moment": "^2.29.4",
     "mongo-sanitize": "^1.1.0",
-    "mongoose": "^6.6.7",
+    "mongoose": "^6.7.0",
     "node-schedule": "^2.1.0",
     "request": "^2.88.2",
     "telegraf": "^4.10.0",
