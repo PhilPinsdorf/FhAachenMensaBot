@@ -120,7 +120,7 @@ export function startBot(): Promise<void> {
         });
 
         bot.command(['bug', 'issue'], (ctx) => {
-            ctx.reply('https://github.com/PhilPinsdorf/FhAachenMensaBot/issues/new');
+            ctx.reply('Report your issue by createing a new Issue here:\n\nhttps://github.com/PhilPinsdorf/FhAachenMensaBot/issues/new');
         });
 
         bot.action(/canteen-([1-6])/g, (ctx) => {
