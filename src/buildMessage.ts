@@ -32,24 +32,29 @@ function parseToMessage(menu: Menue, name: string, writeDay: boolean): string{
         message += `Heute`;
     }
 
-    message += `\* gibt es in der ${name}:\* \n\n\n`;
+    if(menu.open) {
+        message += `\* gibt es in der ${name}:\* \n\n\n`;
 
-    for (let meal of menu.meals) {
-        let priceString: string = Number(meal.price).toFixed(2).replace('.', ',') + ' €';
-        let description: string = createMealDescription(meal.description);
+        for (let meal of menu.meals) {
+            let priceString: string = Number(meal.price).toFixed(2).replace('.', ',') + ' €';
+            let description: string = createMealDescription(meal.description);
 
-        message += `\*${meal.category}:\*\n`;
-        message += `${description} für ${priceString}`;
+            message += `\*${meal.category}:\*\n`;
+            message += `${description} für ${priceString}`;
 
-        message += '\n\n'
+            message += '\n\n'
+        }
+
+        message += `\n`;
+
+        message += `\*Hauptbeilagen\*:\n${menu.sides}\n\n`;
+        message += `\*Nebenbeilage\*:\n${menu.vegetables}`;
+
+        return message;
+    } else {
+        message += ` hat die ${name} \*geschlossen\*.`;
+        return message;
     }
-
-    message += `\n`;
-
-    message += `\*Hauptbeilagen\*:\n${menu.sides}\n\n`;
-    message += `\*Nebenbeilage\*:\n${menu.vegetables}`;
-
-    return message;
 }
 
 // Escape all special characters

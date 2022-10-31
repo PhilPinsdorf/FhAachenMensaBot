@@ -40,11 +40,18 @@ async function requestMeals(date: string): Promise<{ [key: string]: Menue; }> {
 
     for await (let canteen of allCanteens) {
         promiseArray.push(new Promise((resolve, reject) => {
-            request({uri: `https://openmensa.org/api/v2/canteens/${canteen.api_id}/days/${date}/meals`}, (error, response, body) => { 
+            request({uri: `https://openmensa.org/api/v2/canteens/${canteen.api_id}/days/${date}/meals`}, (error, response, body: string) => { 
                 if (error) reject(error);
 
-                let json = JSON.parse(body);
-                information[canteen.canteen_id] = createMenue(json);
+                if(body) {
+                    let json = JSON.parse(body);
+                    information[canteen.canteen_id] = createMenue(json);
+                    console.log(`The menu for the canteen '${canteen.name}' was parsed. Date: ${date}.`);
+                } else {
+                    // The Body was empty. The Canteen is closed.
+                    information[canteen.canteen_id] = {open: false};
+                    console.log(`The canteen '${canteen.name}' is closed. Date: ${date}.`);
+                }
 
                 resolve();
             });
@@ -58,6 +65,9 @@ async function requestMeals(date: string): Promise<{ [key: string]: Menue; }> {
 
 function createMenue(json): Menue {
     let menue: Menue = {meals: []};
+
+    // When this point is reached the request got a response and the canteen must be open.
+    menue.open = true;
 
     for(let element of json) {
         switch (element.category) {
