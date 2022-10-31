@@ -119,6 +119,10 @@ export function startBot(): Promise<void> {
             ctx.reply('https://github.com/PhilPinsdorf/FhAachenMensaBot');
         });
 
+        bot.command(['bug', 'issue'], (ctx) => {
+            ctx.reply('https://github.com/PhilPinsdorf/FhAachenMensaBot/issues/new');
+        });
+
         bot.action(/canteen-([1-6])/g, (ctx) => {
             const id = ctx.chat.id;      
             const canteen_id = ctx.match[0][8];
