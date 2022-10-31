@@ -29,6 +29,9 @@ You'll get all relevant information through the bot.
 | /select | Select your canteen. |
 | /share | Get QR-Code for sharing the Bot. |
 | /code | Get Link to GitHub repo. |
+| /bug | Create new issue in GitHub repo. |
+| /issue | Create new issue in GitHub repo. |
+| /time | Select Time user gets the Message. (Coming Soon) |
 
 # ToDo
 - [x] Clean up code
@@ -38,6 +41,8 @@ You'll get all relevant information through the bot.
 - [x] Add all canteens in Aachen
 - [x] Get tomorrows Meals
 - [x] Request QR-Code for sharing
+- [x] User gets Link to Issue page.
+- [ ] User can select time, when he wants to receive his Message.
 
 # Attention
 The new meals are loaded at 4:30am. Any requests before that time will give you yesterdays meals.
