@@ -14,7 +14,7 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
     "express": "^4.18.2",
-    "jsdom": "^20.0.1",
+    "jsdom": "^20.0.2",
     "moment": "^2.29.4",
     "mongo-sanitize": "^1.1.0",
     "mongoose": "^6.6.7",
