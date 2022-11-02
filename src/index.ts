@@ -8,6 +8,7 @@ import { startBot } from './telegramBot';
 import { parseMessages, finalMessages, escapeMessage } from './buildMessage';
 import { User } from './global';
 import { loadNewMeals } from './requestMeals';
+import moment = require('moment');
 
 export const bot = new Telegraf(process.env.BOT_SECRET as string);
 const dbUri = process.env.DB_URI as string;
@@ -18,7 +19,8 @@ app.get('/keepAlive', (req: Request, res: Response) => {
     res.end();
 });
 
-run();
+//run();
+checkForSendMessage();
 
 async function run() {
     await connect(dbUri);
@@ -33,17 +35,14 @@ async function run() {
     console.log('Telegram Bot started.')
 
     // -2 Hours because of location of Backend Server
-    schedule.scheduleJob('30 2 * * 1-5', async () => { await loadNewMeals(); parseMessages(); }) 
+    schedule.scheduleJob('30 2 * * 1-5', async () => { await loadNewMeals(); parseMessages(); });
     console.log('Started Chron Job for updating Message');
 
-    schedule.scheduleJob('30 7 * * 1-5', () => { sendMessages() })
-    console.log('Started Chron Job for sending Messages');
+    schedule.scheduleJob('*/1 * * * 1-5', () => { checkForSendMessage() });
+    console.log('Started Chron Job to send Messages at picked Time.');
 
-    schedule.scheduleJob('*/10 * * * *', () => { keepAlive() }) 
-    console.log('Started Chron Job for keeping Alive Backend');
-
-    // Send one keep Alive Ping at beginning
-    keepAlive();
+    schedule.scheduleJob('*/10 * * * *', () => { keepAlive() }) ;
+    console.log('Started Chron Job for keeping Alive Backend.');
 }
 
 function keepAlive(): void {
@@ -54,7 +53,7 @@ function keepAlive(): void {
 
 export function sendMessage(id: number, name: string, messageType: string , canteen_id?: number): void {
     if (canteen_id != null) { 
-        bot.telegram.sendMessage(id, `Guten Tag ${escapeMessage(name)}\\!\n` + finalMessages[messageType][canteen_id], { parse_mode: "MarkdownV2" });
+        bot.telegram.sendMessage(id, `Guten Tag ${escapeMessage(name)}\\!\n` + finalMessages[messageType][canteen_id], { parse_mode: "MarkdownV2"  });
         console.log(`Send Message ${messageType} to user ${id}.`);
     } else {
         User.findOne({chat_id: id}, function(err, user) {
@@ -63,8 +62,14 @@ export function sendMessage(id: number, name: string, messageType: string , cant
     }
 }
 
-function sendMessages(): void {
-    User.find({}, function(err, users) {
+function checkForSendMessage(): void {
+    moment.locale('de');
+    // Add two hours because Server is in different time Zone
+    let now: string = moment().add(2, 'hours').format('LT');
+
+    console.log(`Check for users with selected Time: ${now}`);
+
+    User.find({time: now}, function(err, users) {
         users.forEach((user) => {
             sendMessage(parseInt(user.chat_id), user.name, 'today', user.canteen_id);
         });

@@ -69,6 +69,11 @@ const userShema = new Schema({
     type: Number,
     default: 5,
     required: true
+  }, 
+  time: {
+    type: String,
+    default: "09:30",
+    required: true
   }
 });
 
