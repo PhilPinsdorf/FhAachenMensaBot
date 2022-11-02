@@ -123,6 +123,10 @@ export function startBot(): Promise<void> {
             ctx.reply('Report your issue by createing a new Issue here:\n\nhttps://github.com/PhilPinsdorf/FhAachenMensaBot/issues/new');
         });
 
+        bot.command('/time', (ctx) => {
+            console.log(ctx.message[1]);
+        })
+
         bot.action(/canteen-([1-6])/g, (ctx) => {
             const id = ctx.chat.id;      
             const canteen_id = ctx.match[0][8];

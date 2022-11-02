@@ -53,7 +53,7 @@ function keepAlive(): void {
 export function sendMessage(id: number, name: string, messageType: string , canteen_id?: number): void {
     if (canteen_id != null) { 
         bot.telegram.sendMessage(id, `Guten Tag ${escapeMessage(name)}\\!\n` + finalMessages[messageType][canteen_id], { parse_mode: "MarkdownV2"  });
-        console.log(`Send Message ${messageType} to user ${id}.`);
+        console.log(`Send Message ${messageType} to user ${name} with id ${id}.`);
     } else {
         User.findOne({chat_id: id}, function(err, user) {
             sendMessage(parseInt(user.chat_id), user.name, messageType, user.canteen_id);
@@ -66,7 +66,7 @@ function checkForSendMessage(): void {
     // Add two hours because Server is in different time Zone
     let now: string = moment().add(1, 'hours').format('LT');
 
-    console.log(`Check for users with selected Time: ${now}`);
+    console.log(`Check for users with selected Time: ${now}.`);
 
     User.find({time: now}, function(err, users) {
         if (err) throw err;
