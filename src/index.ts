@@ -19,8 +19,7 @@ app.get('/keepAlive', (req: Request, res: Response) => {
     res.end();
 });
 
-//run();
-checkForSendMessage();
+run();
 
 async function run() {
     await connect(dbUri);
@@ -70,7 +69,6 @@ function checkForSendMessage(): void {
     console.log(`Check for users with selected Time: ${now}`);
 
     User.find({time: now}, function(err, users) {
-        console.log(users);
         if (err) throw err;
         users.forEach((user) => {
             sendMessage(parseInt(user.chat_id), user.name, 'today', user.canteen_id);
