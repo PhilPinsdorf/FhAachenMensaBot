@@ -70,6 +70,7 @@ function checkForSendMessage(): void {
     console.log(`Check for users with selected Time: ${now}`);
 
     User.find({time: now}, function(err, users) {
+        console.log(users);
         if (err) throw err;
         users.forEach((user) => {
             sendMessage(parseInt(user.chat_id), user.name, 'today', user.canteen_id);
