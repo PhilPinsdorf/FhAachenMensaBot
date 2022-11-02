@@ -65,11 +65,12 @@ export function sendMessage(id: number, name: string, messageType: string , cant
 function checkForSendMessage(): void {
     moment.locale('de');
     // Add two hours because Server is in different time Zone
-    let now: string = moment().add(2, 'hours').format('LT');
+    let now: string = moment().add(1, 'hours').format('LT');
 
     console.log(`Check for users with selected Time: ${now}`);
 
     User.find({time: now}, function(err, users) {
+        if (err) throw err;
         users.forEach((user) => {
             sendMessage(parseInt(user.chat_id), user.name, 'today', user.canteen_id);
         });
