@@ -125,13 +125,14 @@ export function startBot(): Promise<void> {
 
         bot.command('/time', (ctx) => {
             const id = ctx.chat.id;
+            let messageArray: string[] = ctx.message.text.split(' ');
 
-            if(ctx.message[1]) {
+            if(messageArray[1]) {
                 // Check if String is formated right.
                 let regex: RegExp = /[0-1][0-9]:[0-5][0-9]|2[0-3]:[0-5][0-9]/
 
-                if(ctx.message[1].test(regex)) {
-                    let newTime = ctx.message[1].match(regex);
+                if(regex.test(messageArray[1])) {
+                    let newTime = messageArray[1].match(regex);
                     User.findOneAndUpdate({chat_id: id}, {time: newTime}, function (err, result) {
                         if (err) { throw err }
 
