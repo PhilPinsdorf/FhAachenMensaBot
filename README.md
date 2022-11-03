@@ -14,7 +14,7 @@ Created during another boring TI lecture. \
 Feel free to create pull-requests.
 
 # How to use
-Follow this link: http://t.me/fhaachenmensabot \
+Follow this link: https://t.me/fhaachenmensabot \
 Press on **Start** \
 You'll get all relevant information through the bot.
 
@@ -42,7 +42,7 @@ You'll get all relevant information through the bot.
 - [x] Get tomorrows Meals
 - [x] Request QR-Code for sharing
 - [x] User gets Link to Issue page.
-- [ ] User can select time, when he wants to receive his Message.
+- [x] User can select time, when he wants to receive his Message.
 
 # Attention
 The new meals are loaded at 4:30am. Any requests before that time will give you yesterdays meals.
