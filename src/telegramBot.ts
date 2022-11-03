@@ -124,7 +124,37 @@ export function startBot(): Promise<void> {
         });
 
         bot.command('/time', (ctx) => {
-            console.log(ctx.message[1]);
+            const id = ctx.chat.id;
+
+            if(ctx.message[1]) {
+                // Check if String is formated right.
+                let regex: RegExp = /[0-1][0-9]:[0-5][0-9]|2[0-3]:[0-5][0-9]/
+
+                if(ctx.message[1].test(regex)) {
+                    let newTime = ctx.message[1].match(regex);
+                    User.findOneAndUpdate({chat_id: id}, {time: newTime}, function (err, result) {
+                        if (err) { throw err }
+
+                        if(!result) {
+                            ctx.reply('Du musst diesen Dienst erst mit /start abbonieren!');
+                            console.log(`Non existent User ${id} tried to update Time!`);
+                            return;
+                        }
+
+                        if(result.time == newTime) {
+                            ctx.replyWithMarkdownV2(`Deine Zeit hat sich nicht verändert\\! Du erhältst weiterhin Updates um \*${result.time}\*\\!`);
+                            return;
+                        }
+
+                        ctx.replyWithMarkdownV2(`Du erhältst ab sofort Updates um \*${result.time}\*\\!`);
+                    });
+                } else {
+                    ctx.reply(`Die Uhrzeit wurde nicht richtig eingegeben! \nBitte gebe die Uhrzeit wie folgt ein: \n\'/time hh:mm\'\n\nBeispiel: '/time 08:45'`);
+                }
+
+            } else {
+                ctx.replyWithMarkdownV2('Um deine Zeit der Nachicht zu ändern gebe bitte den Command \*\'/time hh\\:mm\'\* ein\\. \nHierbei ist die Zeit wievolgt anzugeben\\: \n08:13, 15:42, 11:18 etc\\. \n\n\*Bitte bechachte\*\\, dass die neuen Gerichte um 4\\:30 morgens eingelesen werden\\. Anfragen davor führen dazu\\, dass du das Menü von gestern geschickt bekommst\\.');
+            }
         })
 
         bot.action(/canteen-([1-6])/g, (ctx) => {
