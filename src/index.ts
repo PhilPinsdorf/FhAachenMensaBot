@@ -53,7 +53,7 @@ function keepAlive(): void {
 export function sendMessage(id: number, name: string, messageType: string , canteen_id?: number): void {
     if (canteen_id != null) { 
         bot.telegram.sendMessage(id, `Guten Tag ${escapeMessage(name)}\\!\n` + finalMessages[messageType][canteen_id], { parse_mode: "MarkdownV2"  });
-        console.log(`Send Message ${messageType} to user ${name} with id ${id}.`);
+        console.log(`User ${name}/${id}: Send Message ${messageType}.`);
     } else {
         User.findOne({chat_id: id}, function(err, user) {
             sendMessage(parseInt(user.chat_id), user.name, messageType, user.canteen_id);
