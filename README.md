@@ -31,7 +31,7 @@ You'll get all relevant information through the bot.
 | /code | Get Link to GitHub repo. |
 | /bug | Create new issue in GitHub repo. |
 | /issue | Create new issue in GitHub repo. |
-| /time | Select Time user gets the Message. (Coming Soon) |
+| /time | Select Time user gets the Message. |
 
 # ToDo
 - [x] Clean up code
