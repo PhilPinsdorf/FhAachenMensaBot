@@ -132,7 +132,7 @@ export function startBot(): Promise<void> {
                 let regex: RegExp = /[0-1][0-9]:[0-5][0-9]|2[0-3]:[0-5][0-9]/
 
                 if(regex.test(messageArray[1])) {
-                    let newTime = messageArray[1].match(regex);
+                    let newTime = messageArray[1].match(regex)[0];
                     User.findOneAndUpdate({chat_id: id}, {time: newTime}, function (err, result) {
                         if (err) { throw err }
 
