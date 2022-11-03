@@ -147,7 +147,7 @@ export function startBot(): Promise<void> {
                             return;
                         }
 
-                        ctx.replyWithMarkdownV2(`Du erhältst ab sofort Updates um \*${result.time}\*\\!`);
+                        ctx.replyWithMarkdownV2(`Du erhältst ab sofort Updates um \*${newTime}\*\\!`);
                     });
                 } else {
                     ctx.reply(`Die Uhrzeit wurde nicht richtig eingegeben! \nBitte gebe die Uhrzeit wie folgt ein: \n\'/time hh:mm\'\n\nBeispiel: '/time 08:45'`);
