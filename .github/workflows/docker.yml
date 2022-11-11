@@ -7,4 +7,4 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Build and push docker
-        run: docker build -f ./Dockerfile
+        run: docker build Dockerfile
