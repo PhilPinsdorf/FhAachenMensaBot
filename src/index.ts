@@ -8,7 +8,7 @@ import { startBot } from './telegramBot';
 import { parseMessages, finalMessages, escapeMessage } from './buildMessage';
 import { User } from './global';
 import { loadNewMeals } from './requestMeals';
-import moment = require('moment');
+import * as moment from 'moment';
 
 export const bot = new Telegraf(process.env.BOT_SECRET as string);
 const dbUri = process.env.DB_URI as string;

@@ -1,7 +1,7 @@
 {
   "name": "fhaachenmensabot",
   "version": "1.0.0",
-  "description": "A small Telegram Bot to notify what is currently avalible in the canteen",
+  "description": "A small Telegram Bot to notify what is currently avalible in the canteen.",
   "main": "index.js",
   "scripts": {
     "start": "node dist/index.js",
@@ -12,6 +12,7 @@
   "author": "philpinsdorf",
   "license": "MIT",
   "dependencies": {
+    "@types/mongoose": "^5.11.97",
     "express": "^4.18.2",
     "moment": "^2.29.4",
     "mongo-sanitize": "^1.1.0",
@@ -22,6 +23,9 @@
     "typescript": "^4.8.4"
   },
   "engines": {
-    "node": "16.18.0"
+    "node": "^16.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.9"
   }
 }
