@@ -1,10 +1,12 @@
 on: push
 
-name: 'Docker Container Build'
-description: 'Build a Docker COntainer with the Bot Code.'
-runs:
-  using: 'docker'
-  image: 'Dockerfile'
-  env:
-    BOT_SECRET: $BOT_SECRET
-    DB_URI: $DB_URI
+jobs:
+  docker:
+    name: 'Docker Container Build'
+    description: 'Build a Docker COntainer with the Bot Code.'
+    runs:
+      using: 'docker'
+      image: 'Dockerfile'
+      env:
+        BOT_SECRET: $BOT_SECRET
+        DB_URI: $DB_URI
