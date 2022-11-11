@@ -1,3 +1,5 @@
+on: push
+
 name: 'Docker Container Build'
 description: 'Build a Docker COntainer with the Bot Code.'
 runs:
