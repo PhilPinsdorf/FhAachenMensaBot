@@ -12,12 +12,6 @@ import * as moment from 'moment';
 
 export const bot = new Telegraf(process.env.BOT_SECRET as string);
 const dbUri = process.env.DB_URI as string;
-const app: Express = express();
-
-app.get('/keepAlive', (req: Request, res: Response) => {
-    res.send('Send keep Alive Ping.');
-    res.end();
-});
 
 run();
 
@@ -25,29 +19,17 @@ async function run() {
     await connect(dbUri);
     console.log('Connected to Database');
 
-    app.listen(process.env.PORT || 3000 , () => { console.log('Listen to 3000') });
-
     await loadNewMeals();
     parseMessages();
     
     await startBot();
     console.log('Telegram Bot started.')
 
-    // -2 Hours because of location of Backend Server
     schedule.scheduleJob('30 2 * * 1-5', async () => { await loadNewMeals(); parseMessages(); });
-    console.log('Started Chron Job for updating Message');
+    console.log('Started Chron Job for updating Message.');
 
     schedule.scheduleJob('*/1 * * * 1-5', () => { checkForSendMessage() });
     console.log('Started Chron Job to send Messages at picked Time.');
-
-    schedule.scheduleJob('*/10 * * * *', () => { keepAlive() }) ;
-    console.log('Started Chron Job for keeping Alive Backend.');
-}
-
-function keepAlive(): void {
-    request('https://aachenmensabot.herokuapp.com/keepAlive', (err, res, body) => {
-        console.log('Received Keep Alive Ping.');
-    })
 }
 
 export function sendMessage(id: number, name: string, messageType: string , canteen_id?: number): void {
@@ -63,8 +45,7 @@ export function sendMessage(id: number, name: string, messageType: string , cant
 
 function checkForSendMessage(): void {
     moment.locale('de');
-    // Add two hours because Server is in different time Zone
-    let now: string = moment().add(1, 'hours').format('LT');
+    let now: string = moment().format('LT');
 
     console.log(`Check for users with selected Time: ${now}.`);
 

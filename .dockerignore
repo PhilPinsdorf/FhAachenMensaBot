@@ -1,6 +1,5 @@
 node_modules
 LICENSE.md
 .tokeignore
-Procfile
 README.md
 dist
