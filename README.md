@@ -12,8 +12,6 @@ A small Telegram bot that will send you a message with the canteen meals of the 
 Now working for all Canteens in Aachen. \
 Feel free to create pull-requests.
 
-# Currently under maintenance! Bot will work again Mo. 23.01.2023!
-
 # How to use
 Follow this link: https://t.me/fhaachenmensabot \
 Press on **Start** \
