@@ -44,6 +44,7 @@ You'll get all relevant information through the bot.
 - [x] User can select time, when he wants to receive his Message.
 - [ ] Add Broadcast Admin Tool
 - [ ] Add Day Seletion
+- [ ] Add daily Admin Stats
 
 # Attention
 The new meals are loaded at 4:30am. Any requests before that time will give you yesterdays meals.
