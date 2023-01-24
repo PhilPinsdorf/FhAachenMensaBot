@@ -21,4 +21,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: philpin/fhaachenmensabot:latest, philpin/fhaachenmensabot:${{ github.run_number }}
+          tags: philpin/fhaachenmensabot:${{ github.run_number }}, philpin/fhaachenmensabot:latest
