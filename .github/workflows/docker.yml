@@ -1,4 +1,7 @@
-on: push
+on:
+  release:
+    types: [released]
+
 
 jobs:
   build-container:
