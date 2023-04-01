@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: fh-aachen-mensa-bot
+  labels:
+    fh-aachen-mensa-bot/part: bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      fh-aachen-mensa-bot/part: bot
+  template:
+    metadata:
+      labels:
+        fh-aachen-mensa-bot/part: bot
+    spec:
+      containers:
+        - name: bot
+          image: docker.io/philpin/fhaachenmensabot:latest
+          imagePullPolicy: Always
+          env:
+            - name: BOT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: fh-aachen-mensa-bot
+                  key: bot-token
+            - name: DB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: fh-aachen-mensa-bot
+                  key: db-uri
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: fh-aachen-mensa-bot
+type: Opaque
+data:
+  bot-token: <base64 encoded bot token>
+  db-uri: <base64 encoded mongodb uri>
