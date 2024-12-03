@@ -88,20 +88,6 @@ function createMealDescription(description: string): string {
 }
 
 function getDay(): string {
-    let day: string;
-
-    moment.locale('de')
-    switch (moment().day()) {
-        case 5:
-            day = moment().add(3, 'days').format("dddd");
-            break;
-        case 6:
-            day = moment().add(2, 'days').format("dddd");
-            break;
-        default:
-            day = moment().add(1, 'days').format("dddd");
-            break;
-    }
-
-    return day;
+    moment.locale('de');
+    return moment().add(1, 'days').format("dddd");
 }

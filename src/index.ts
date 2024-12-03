@@ -1,9 +1,6 @@
 import { Telegraf } from 'telegraf';
 import { connect } from 'mongoose';
-import { Express, Request, Response } from 'express';
-import * as express from 'express';
 import * as schedule from 'node-schedule'; 
-import * as request from 'request';
 import { startBot } from './telegramBot';
 import { parseMessages, finalMessages, escapeMessage } from './buildMessage';
 import { User } from './global';
