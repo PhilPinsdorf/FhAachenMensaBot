@@ -1,4 +1,4 @@
-import { Telegraf } from 'telegraf';
+import { Bot } from "grammy";
 import { connect } from 'mongoose';
 import * as schedule from 'node-schedule'; 
 import { startBot } from './telegramBot';
@@ -7,7 +7,7 @@ import { User } from './global';
 import { loadNewMeals } from './requestMeals';
 import * as moment from 'moment';
 
-export const bot = new Telegraf(process.env.BOT_SECRET as string);
+export const bot = new Bot(process.env.BOT_SECRET as string);
 const dbUri = process.env.DB_URI as string;
 
 run();
@@ -29,13 +29,18 @@ async function run() {
     console.log('Started Chron Job to send Messages at picked Time.');
 }
 
-export function sendMessage(id: number, name: string, messageType: string , canteen_id?: number): void {
+export function sendMessage(id: number, name: string, messageType: string , canteen_id: number): void {
     if (canteen_id != null) { 
-        bot.telegram.sendMessage(id, `Guten Tag ${escapeMessage(name)}\\!\n` + finalMessages[messageType][canteen_id], { parse_mode: "MarkdownV2"  });
-        console.log(`User ${name}/${id}: Send Message ${messageType}.`);
+        bot.api.sendMessage(id, `Guten Tag ${escapeMessage(name)}\\!\n` + finalMessages[messageType][canteen_id], { parse_mode: "MarkdownV2"  }).then( text => {
+            console.log(`User ${name}/${id}: Send Message ${messageType}.`);
+        }).catch( err => {
+            console.log(`Error from User ${name}/${id}: ${err}.`);
+        });
     } else {
-        User.findOne({chat_id: id}, function(err, user) {
-            sendMessage(parseInt(user.chat_id), user.name, messageType, user.canteen_id);
+        User.findOne({chat_id: id}).then( doc => {
+            sendMessage(parseInt(doc.chat_id), doc.name, messageType, doc.canteen_id);
+        }).catch( err => {
+            console.log(`Error on sendMessage: ${err}`);
         });
     }
 }
@@ -46,14 +51,15 @@ function checkForSendMessage(): void {
 
     console.log(`Check for users with selected Time: ${now}.`);
 
-    User.find({time: now}, function(err, users) {
-        if (err) throw err;
-        users.forEach((user) => {
+    User.find({time: now}).then( docs => {
+        docs.forEach(user => {
             sendMessage(parseInt(user.chat_id), user.name, 'today', user.canteen_id);
         });
+    }).catch( err => {
+        console.log(`Error on checkForSendMessage: ${err}`)
     });
 }
 
-process.once("SIGINT", () => bot.stop("SIGINT"));
-process.once("SIGTERM", () => bot.stop("SIGTERM"));
+process.once("SIGINT", () => bot.stop());
+process.once("SIGTERM", () => bot.stop());
 

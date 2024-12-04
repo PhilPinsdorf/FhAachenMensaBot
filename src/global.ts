@@ -17,7 +17,6 @@ export interface Menue {
     sides?: string;
     vegetables?: string; 
     open?: boolean;
-
 }
 
 export let allCanteens: Canteen[] = [ 

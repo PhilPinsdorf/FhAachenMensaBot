@@ -1,8 +1,8 @@
 import * as moment from 'moment';
 import { Meal, Menue, allCanteens } from './global';
 
-export let mealsToday: {[key: string]: Menue} = {};
-export let mealsTomorrow: {[key: string]: Menue} = {};
+export let todaysMeals: {[key: string]: Menue};
+export let tomorrowsMeals: {[key: string]: Menue};
 
 async function requestMeals(date: string): Promise<{ [key: string]: Menue; }> {
     let information: {[key: string]: Menue} = {};
@@ -22,27 +22,31 @@ async function requestMeals(date: string): Promise<{ [key: string]: Menue; }> {
     return information;
 }
 
+// ToDo: Make Typesafe
 function createMenue(json): Menue {
-    let menue: Menue = { meals: [] };
-
-    menue.open = true;
+    let menue: Menue = { 
+        meals: [],
+        open: true,
+    };
     
     json.forEach(element => {
-        if(element.category == 'Hauptbeilagen') {
-            menue.sides = element.name;
-            return;
-        }
+        switch (element.category) {
+            case 'Hauptbeilagen':
+                menue.sides = element.name;
+                break;
 
-        if(element.category == 'Nebenbeilage') {
-            menue.vegetables = element.name;
-            return;
+            case 'Nebenbeilage':
+                menue.vegetables = element.name;
+                break;
+            
+            default:
+                menue.meals.push({
+                    description: element.name,
+                    category: element.category,
+                    price: element.prices.students,
+                } as Meal);
+            break;
         }
-
-        menue.meals.push({
-            description: element.name,
-            category: element.category,
-            price: element.prices.students,
-        } as Meal);
     });
 
     return menue;
@@ -52,6 +56,6 @@ export async function loadNewMeals(): Promise<void> {
     const today = moment().format("YYYY-MM-DD");
     const tomorrow = moment().add(1, 'days').format("YYYY-MM-DD");
 
-    mealsToday = await requestMeals(today);
-    mealsTomorrow = await requestMeals(tomorrow);
+    todaysMeals = await requestMeals(today);
+    tomorrowsMeals = await requestMeals(tomorrow);
 }

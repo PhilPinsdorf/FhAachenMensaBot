@@ -1,59 +1,24 @@
-import { mealsToday, mealsTomorrow } from "./requestMeals";
+import { todaysMeals, tomorrowsMeals } from "./requestMeals";
 import { allCanteens, Menue } from "./global";
 import * as moment from 'moment';
 
 
 // Object with all completely parsed Messages
-export let finalMessages: {[key: string]: {[key: string]: string}} = {};
+export let finalMessages: Record<string, Record<string, string>> = {
+    today: {},
+    tomorrow: {}
+};
 
 // Parse all Messages for all canteens
 export function parseMessages() {
-    finalMessages = {};
-    finalMessages['today'] = {};
-    finalMessages['tomorrow'] = {};
-
     for(let canteen of allCanteens) {
-        let messageToday = parseToMessage(mealsToday[canteen.canteen_id], canteen.name, false);
-        let escapedToday = escapeMessage(messageToday);
-        finalMessages['today'][canteen.canteen_id] = escapedToday;
+        finalMessages.today[canteen.canteen_id] = escapeMessage(
+            parseToMessage(todaysMeals, canteen.name, getDayTitle())
+        );
 
-        let messageTomorrow = parseToMessage(mealsTomorrow[canteen.canteen_id], canteen.name, true);
-        let escapedTomorrow = escapeMessage(messageTomorrow);
-        finalMessages['tomorrow'][canteen.canteen_id] = escapedTomorrow;
-    }
-}
-
-// Create Message from parsed Information
-function parseToMessage(menu: Menue, name: string, writeDay: boolean): string{
-    let message: string = ``;
-    if(writeDay) {
-        message += getDay();
-    } else {
-        message += `Heute`;
-    }
-
-    if(menu.open) {
-        message += `\* gibt es in der ${name}:\* \n\n\n`;
-
-        for (let meal of menu.meals) {
-            let priceString: string = Number(meal.price).toFixed(2).replace('.', ',') + ' €';
-            let description: string = createMealDescription(meal.description);
-
-            message += `\*${meal.category}:\*\n`;
-            message += `${description} für ${priceString}`;
-
-            message += '\n\n'
-        }
-
-        message += `\n`;
-
-        message += `\*Hauptbeilagen\*:\n${menu.sides}\n\n`;
-        message += `\*Nebenbeilage\*:\n${menu.vegetables}`;
-
-        return message;
-    } else {
-        message += ` hat die ${name} \*geschlossen\*.`;
-        return message;
+        finalMessages.tomorrow[canteen.canteen_id] = escapeMessage(
+            parseToMessage(tomorrowsMeals, canteen.name, "Heute")
+        );
     }
 }
 
@@ -62,32 +27,50 @@ export function escapeMessage(message: string): string {
     return message.replace(/[.\-_+?^${}()|[\]\\]/g, '\\$&');
 }
 
+// Create Message from parsed Information
+function parseToMessage(menu: Menue, canteen_name: string, day_title: string): string{
+    let message: string = day_title;
+
+    if(menu.open) {
+        message += `\* gibt es in der ${canteen_name}:\* \n\n\n`;
+
+        for (let meal of menu.meals) {
+            let priceString: string = Number(meal.price).toFixed(2).replace('.', ',') + ' €';
+            let description: string = createMealDescription(meal.description);
+
+            message += `\*${meal.category}:\*\n`;
+            message += `${description} für ${priceString}\n\n\n`;
+        }
+
+        message += `\*Hauptbeilagen\*:\n${menu.sides}\n\n`;
+        message += `\*Nebenbeilage\*:\n${menu.vegetables}`;
+    } else {
+        message += ` hat die ${canteen_name} \*geschlossen\*.`;
+    }
+
+    return message;
+}
+
 // Create a more readable Menue: abc | def | ghi  =>  abc, def dazu ghi
 function createMealDescription(description: string): string {
-    let parts: string[] = description.split(' | ');
-    parts.map((element) => { element.trim() });
-
     let text: string = "";
-    let len: number = parts.length;
+    let meal_components: string[] = description.split('|');
+    meal_components.map((element) => { element.trim() });
 
-    for(let part of parts) {
-        text += part;
-
-        if(len > 2) {
+    for (let i = 0; i < meal_components.length; i++) {
+        text += meal_components[i];
+    
+        if (i < meal_components.length - 2) {
             text += ", ";
+        } else if (i === meal_components.length - 2) {
+            text += " dazu "; 
         }
-
-        if(len == 2) {
-            text += " dazu ";
-        }
-
-        len--;
     }
 
     return text;
 }
 
-function getDay(): string {
+function getDayTitle(): string {
     moment.locale('de');
     return moment().add(1, 'days').format("dddd");
 }
