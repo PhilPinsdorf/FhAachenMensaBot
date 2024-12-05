@@ -19,24 +19,23 @@ You'll get all relevant information through the bot.
 # Commands
 | Command | Description |
 |---|---|
-| /start | Subscribe for daily canteen updates. |
+| /start | Subscribe to daily canteen updates. |
 | /stop | Unsubscribe from daily canteen updates. |
 | /request | Immediately sends you todays meals. |
 | /today | Immediately sends you todays meals. |
 | /tomorrow | Immediately sends you tomorrows meals. |
-| /select | Select your canteen. |
-| /share | Get QR-Code for sharing the Bot. |
+| /canteen | Select your canteen. |
+| /share | Get a QR-Code for sharing the Bot. |
 | /code | Get Link to GitHub repo. |
-| /bug | Create new issue in the GitHub repo. |
 | /issue | Create new issue in the GitHub repo. |
 | /time | Select Time user gets the Message. |
-| /owner | Get my personal information. |
-| /support | Get my PayPal information. |
-| /once-today | Get the option to once request todays meals for another canteen. |
-| /once-tomorrow | Get the option to once request tomorrows meals for another canteen. |
-| /once-everyday | Get the option to once request any days meals for another canteen. |
-| /displayname | Change your personal Display Name. |
-| /alergy | Receive information abeout alergeens. |
+| /owner | Get my personal information. (Coming Soon) |
+| /support | Get my PayPal information. (Coming Soon) |
+| /once-today | Get the option to once request todays meals for another canteen. (Coming Soon) |
+| /once-tomorrow | Get the option to once request tomorrows meals for another canteen. (Coming Soon) |
+| /once-everyday | Get the option to once request any days meals for another canteen. (Coming Soon) |
+| /displayname | Change your personal Display Name. (Coming Soon) |
+| /alergy | Receive information abeout alergeens. (Coming Soon) |
 
 
 # ToDo

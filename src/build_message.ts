@@ -1,5 +1,5 @@
-import { todaysMeals, tomorrowsMeals } from "./requestMeals";
-import { allCanteens, Menue } from "./global";
+import { todaysMeals, tomorrowsMeals } from "./request_meals";
+import { all_canteens, IMenue } from "./global";
 import * as moment from 'moment';
 
 
@@ -11,7 +11,7 @@ export let finalMessages: Record<string, Record<string, string>> = {
 
 // Parse all Messages for all canteens
 export function parseMessages() {
-    for(let canteen of allCanteens) {
+    for(let canteen of all_canteens) {
         finalMessages.today[canteen.canteen_id] = escapeMessage(
             parseToMessage(todaysMeals, canteen.name, getDayTitle())
         );
@@ -28,7 +28,7 @@ export function escapeMessage(message: string): string {
 }
 
 // Create Message from parsed Information
-function parseToMessage(menu: Menue, canteen_name: string, day_title: string): string{
+function parseToMessage(menu: IMenue, canteen_name: string, day_title: string): string{
     let message: string = day_title;
 
     if(menu.open) {

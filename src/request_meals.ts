@@ -1,13 +1,13 @@
 import * as moment from 'moment';
-import { Meal, Menue, allCanteens } from './global';
+import { IMeal, IMenue, all_canteens } from './global';
 
-export let todaysMeals: {[key: string]: Menue};
-export let tomorrowsMeals: {[key: string]: Menue};
+export let todaysMeals: {[key: string]: IMenue};
+export let tomorrowsMeals: {[key: string]: IMenue};
 
-async function requestMeals(date: string): Promise<{ [key: string]: Menue; }> {
-    let information: {[key: string]: Menue} = {};
+async function requestMeals(date: string): Promise<{ [key: string]: IMenue; }> {
+    let information: {[key: string]: IMenue} = {};
 
-    await Promise.all(allCanteens.map(async (canteen) => {
+    await Promise.all(all_canteens.map(async (canteen) => {
         try {
             const res = await fetch(`https://openmensa.org/api/v2/canteens/${canteen.api_id}/days/${date}/meals`);
             const json = await res.json();
@@ -23,8 +23,8 @@ async function requestMeals(date: string): Promise<{ [key: string]: Menue; }> {
 }
 
 // ToDo: Make Typesafe
-function createMenue(json): Menue {
-    let menue: Menue = { 
+function createMenue(json): IMenue {
+    let menue: IMenue = { 
         meals: [],
         open: true,
     };
@@ -44,7 +44,7 @@ function createMenue(json): Menue {
                     description: element.name,
                     category: element.category,
                     price: element.prices.students,
-                } as Meal);
+                } as IMeal);
             break;
         }
     });

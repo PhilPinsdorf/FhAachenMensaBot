@@ -25,7 +25,7 @@
     "@grammyjs/types": "^3.16.0",
     "@types/cheerio": "^0.22.35",
     "@types/mongoose": "^5.11.96",
-    "@types/node": "^18.11.18",
+    "@types/node": "^22.10.1",
     "typescript": "^5.7.2"
   }
 }

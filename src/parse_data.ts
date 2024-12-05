@@ -1,4 +1,5 @@
 import * as cheerio from 'cheerio';
+import type { Element } from 'domhandler';
 
 interface Meal {
     category: string;
@@ -28,7 +29,7 @@ const parseUrl = async (url: string): Promise<any> => {
     // Fetch the HTML document
     const response = await fetch(url);
     const data = await response.text();
-    const $: cheerio.Root = cheerio.load(data);
+    const $: cheerio.CheerioAPI = cheerio.load(data);
 
     // Parse the legend (additives)
     canteen.legend = parseLegend($);
@@ -40,7 +41,7 @@ const parseUrl = async (url: string): Promise<any> => {
     return canteen;
 }
 
-const parseLegend = ($: cheerio.Root): Legend => {
+const parseLegend = ($: cheerio.CheerioAPI): Legend => {
     const legend: Legend = {};
     const legendText = $('#additives').text();
     const regex = /\(([\dA-Z]+)\)\s*([\w\s]+)/g; // Entferne ?P<name> und ?P<value>
@@ -53,7 +54,7 @@ const parseLegend = ($: cheerio.Root): Legend => {
     return legend;
 }
 
-const parseDay = async (canteen: Menue, $: cheerio.Root, day: string): Promise<void> => {
+const parseDay = async (canteen: Menue, $: cheerio.CheerioAPI, day: string): Promise<void> => {
     const dayColumn = $(`#${day}`);
     if (!dayColumn.length) {
         canteen.open = false; // Assume closed if no day column
@@ -68,15 +69,15 @@ const parseDay = async (canteen: Menue, $: cheerio.Root, day: string): Promise<v
     }
 
     // Parse meals for today/tomorrow
-    const mealsTable = dayColumn.find('.menues');
+    const mealsTable: cheerio.Cheerio<Element> = dayColumn.find('.menues');
     addMealsFromTable($, canteen, mealsTable, day);
 
     // Parse extras if available
-    const extrasTable = dayColumn.find('.extras');
+    const extrasTable: cheerio.Cheerio<Element> = dayColumn.find('.extras');
     addMealsFromTable($, canteen, extrasTable, day);
 }
 
-const addMealsFromTable = ($: cheerio.Root, canteen: Menue, table: cheerio.Cheerio, day: string): void => {
+const addMealsFromTable = ($: cheerio.CheerioAPI, canteen: Menue, table: cheerio.Cheerio<Element>, day: string): void => {
     table.find('tr').each((_, row) => {
         const { category, name, notes, price } = parseMeal($, $(row), canteen.legend);
         if (category && name) {
@@ -90,7 +91,7 @@ const addMealsFromTable = ($: cheerio.Root, canteen: Menue, table: cheerio.Cheer
     });
 }
 
-const parseMeal = ($: cheerio.Root, row: cheerio.Cheerio, legend: Legend): { category: string, name: string, notes: string[], price: string } => {
+const parseMeal = ($: cheerio.CheerioAPI, row: cheerio.Cheerio<Element>, legend: Legend): { category: string, name: string, notes: string[], price: string } => {
     const category = row.find('.menue-category').text().trim();
     const descriptionContainer = row.find('.menue-desc');
     const { name, notes } = parseDescription($, descriptionContainer, legend);
@@ -107,7 +108,7 @@ const parseMeal = ($: cheerio.Root, row: cheerio.Cheerio, legend: Legend): { cat
     return { category, name, notes, price };
 }
 
-const parseDescription = ($: cheerio.Root, descriptionContainer: cheerio.Cheerio, legend: Legend): { name: string, notes: string[] } => {
+const parseDescription = ($: cheerio.CheerioAPI, descriptionContainer: cheerio.Cheerio<Element>, legend: Legend): { name: string, notes: string[] } => {
     let nameParts: string[] = [];
     let notes: Set<string> = new Set();
 

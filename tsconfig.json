@@ -2,7 +2,8 @@
   "compilerOptions": {
     "skipLibCheck": true,
     "outDir": "./dist",
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "types": ["node"]
   }, 
   "include": [
     "src/**/*.ts"
