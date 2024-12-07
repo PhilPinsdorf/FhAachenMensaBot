@@ -147,4 +147,6 @@ function emoji(category: string, notes: string[], sides: string[]): string {
     if (category.includes('Burger')) {
         return ' 🍔';
     }
+
+    return '';
 }
