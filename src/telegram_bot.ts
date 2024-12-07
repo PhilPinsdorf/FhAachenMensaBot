@@ -3,11 +3,26 @@ import { all_canteens } from "./definitions";
 import * as sanitize from "mongo-sanitize";
 import { Context, InlineKeyboard, InputFile } from "grammy";
 import { user_exists, add_user, remove_user, update_canteen, update_time, update_allergens } from "./database_operations"
+import { escape_message } from "./build_messages";
 
 // Returns a promise, that starts the bot
 export function start_bot(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         const canteen_keyboard = generate_canteen_keyboard()
+
+        bot.use(async (ctx, next) => {
+            const originalReply = ctx.reply;
+  
+            ctx.reply = async (...args) => {
+                if (typeof args[0] === 'string') {
+                    args[0] = escape_message(args[0]); 
+                }
+            
+                return originalReply.apply(ctx, args);
+            };
+        
+            await next();
+        });
 
 
         bot.command('start', async (ctx) => {
@@ -16,7 +31,7 @@ export function start_bot(): Promise<void> {
             
             if(user) {
                 ctx.reply(
-                    `Danke ${name}, dass du dich für den Dienst angemeldet hast\\! \n\nDu bekommst ab jetzt jeden Tag um \*9:30 Uhr\* eine Benachrichtigung darüber, was es heute in deiner Aachener Mensa zu essen gibt\\. Falls du zwischendurch nachgucken möchtest, was es heute und morgen in der Mensa gibt, kannst du das jederzeit mit /today und /tomorrow tun\\. Falls du Updates von einer anderen Mensa bekommen möchtest, kannst du deine Mensa mit /canteen ändern\\. Die Mensa Eupener Straße ist standartmäßig am Anfang ausgewählt\\. Falls du Updates zu einer anderen Zeit bekommen möchtest, kannst du deine Zeit mit /time ändern\\. Du kannst dir Infos über Allergene und Inhaltsstoffe mit /allergens zu deiner täglichen Nachicht hinzufügen\\. \n\nMit /stop kannst du dich von diesem Dienst wieder abmelden\\. \n\nBei Rückfragen oder Bugs, schreibe \\@philpinsdorf auf Telegram an\\.`,
+                    `Danke ${name}, dass du dich für den Dienst angemeldet hast! \n\nDu bekommst ab jetzt jeden Tag um \*9:30 Uhr\* eine Benachrichtigung darüber, was es heute in deiner Aachener Mensa zu essen gibt. Falls du zwischendurch nachgucken möchtest, was es heute und morgen in der Mensa gibt, kannst du das jederzeit mit /today und /tomorrow tun. Falls du Updates von einer anderen Mensa bekommen möchtest, kannst du deine Mensa mit /canteen ändern. Die Mensa Eupener Straße ist standartmäßig am Anfang ausgewählt. Falls du Updates zu einer anderen Zeit bekommen möchtest, kannst du deine Zeit mit /time ändern. Du kannst dir Infos über Allergene und Inhaltsstoffe mit /allergens zu deiner täglichen Nachicht hinzufügen. \n\nMit /stop kannst du dich von diesem Dienst wieder abmelden. \n\nBei Rückfragen oder Bugs, schreibe @philpinsdorf auf Telegram an.`,
                     { parse_mode: "MarkdownV2" }
                 );
                 return;
@@ -32,7 +47,7 @@ export function start_bot(): Promise<void> {
 
             if(user) {
                 ctx.reply(
-                    `Vielen Dank ${name}, dass du meinen Dienst verwendet hast\\. \n\nDu hast hiermit deinen Account \*gelöscht\* und wirst in Zukunft \*keine Benachichtigungen\* mehr bekommen\\. \n\nFalls du dich doch umentscheiden solltest kannst du jederzeit dich mit /start wieder anmelden\\.`,
+                    `Vielen Dank ${name}, dass du meinen Dienst verwendet hast. \n\nDu hast hiermit deinen Account \*gelöscht\* und wirst in Zukunft \*keine Benachichtigungen\* mehr bekommen. \n\nFalls du dich doch umentscheiden solltest kannst du jederzeit dich mit /start wieder anmelden.`,
                     { parse_mode: "MarkdownV2" }
                 );
                 return; 
@@ -97,9 +112,9 @@ export function start_bot(): Promise<void> {
             }
 
             if(user.allergens) {
-                ctx.reply(`Du bekommst absofort alle updates \*mit\* Allergie & Inhaltsstoff Angaben\\.\n\n\*Ich übernehme keine Haftung für die vollständigkeit und die Richtigkeit dieser Daten\\. Die Daten können falsch oder unvollständig sein\\.\*`, { parse_mode: "MarkdownV2" });
+                ctx.reply(`Du bekommst absofort alle updates \*mit\* Allergie & Inhaltsstoff Angaben.\n\n\*Ich übernehme keine Haftung für die vollständigkeit und die Richtigkeit dieser Daten. Die Daten können falsch oder unvollständig sein.\*`, { parse_mode: "MarkdownV2" });
             } else {
-                ctx.reply(`Du bekommst absofort alle updates \*ohne\* Allergie & Inhaltsstoff Angaben\\.`, { parse_mode: "MarkdownV2" });
+                ctx.reply(`Du bekommst absofort alle updates \*ohne\* Allergie & Inhaltsstoff Angaben.`, { parse_mode: "MarkdownV2" });
             }
         });
 
@@ -130,7 +145,7 @@ export function start_bot(): Promise<void> {
             const message_arguments: string[] = ctx.match.split(' ');
 
             if(message_arguments.length != 1) {
-                ctx.reply('Um deine Zeit der Nachicht zu ändern gebe bitte den Command \*\'/time hh\\:mm\'\* ein\\. \nHierbei ist die Zeit wievolgt anzugeben\\: \n08:13, 15:42, 11:18 etc\\. \n\n\*Bitte bechachte\*\\, dass die neuen Gerichte um 3\\:00 morgens eingelesen werden\\. Anfragen davor führen dazu\\, dass du das Menü von gestern geschickt bekommst\\.', { parse_mode: "MarkdownV2" });
+                ctx.reply('Um deine Zeit der Nachicht zu ändern gebe bitte den Command \*\'/time hh\\:mm\'\* ein. \nHierbei ist die Zeit wievolgt anzugeben: \n08:13, 15:42, 11:18 etc. \n\n\*Bitte bechachte\*, dass die neuen Gerichte um 3:00 morgens eingelesen werden. Anfragen davor führen dazu, dass du das Menü von gestern geschickt bekommst.', { parse_mode: "MarkdownV2" });
                 console.log(`User ${name}/${chat_id}: Started Time Update Process.`);
                 return;
             }
@@ -139,7 +154,7 @@ export function start_bot(): Promise<void> {
             let regex: RegExp = /[0-1][0-9]:[0-5][0-9]|2[0-3]:[0-5][0-9]/
 
             if(!regex.test(message_arguments[0])) {
-                ctx.reply(`Die Uhrzeit wurde nicht richtig eingegeben\\! \nBitte gebe die Uhrzeit wie folgt ein\\: \n\*\'/time hh:mm\'\*\n\n\*Beispiel\\:\* '/time 08\\:45'`, { parse_mode: "MarkdownV2" });
+                ctx.reply(`Die Uhrzeit wurde nicht richtig eingegeben! \nBitte gebe die Uhrzeit wie folgt ein: \n\*\'/time hh:mm\'\*\n\n\*Beispiel:\* '/time 08:45'`, { parse_mode: "MarkdownV2" });
                 console.log(`${name}/${chat_id}: Tried to update time with wrong format.`);
                 return;
             }
@@ -152,7 +167,7 @@ export function start_bot(): Promise<void> {
                 return;
             }
 
-            ctx.reply(`Du erhältst ab sofort Updates um \*${time}\*\\!`, { parse_mode: "MarkdownV2" });
+            ctx.reply(`Du erhältst ab sofort Updates um \*${time}\*!`, { parse_mode: "MarkdownV2" });
         });
 
 
@@ -167,7 +182,7 @@ export function start_bot(): Promise<void> {
             }
 
             const canteen = all_canteens.find(c => c.canteen_id === canteen_id);
-            ctx.editMessageText(`Du erhältst ab sofort tägliche Updates von der \*${canteen.name}\*\\.`, { parse_mode: 'MarkdownV2' });
+            ctx.editMessageText(`Du erhältst ab sofort tägliche Updates von der \*${canteen.name}\*.`, { parse_mode: 'MarkdownV2' });
         });
 
 
