@@ -3,6 +3,7 @@
   <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/philpinsdorf/fhaachenmensabot?style=for-the-badge">
   <img alt="GitHub closed issues" src="https://img.shields.io/github/issues-closed-raw/philpinsdorf/FhAachenMensaBot?color=purple&style=for-the-badge">
   <img alt="GitHub" src="https://img.shields.io/github/license/philpinsdorf/fhaachenmensabot?color=red&style=for-the-badge">
+  <img alt="Lines of code" src="https://img.shields.io/endpoint?url=https://ghloc.vercel.app/api/PhilPinsdorf/FhAachenMensaBot/badge?filter=.ts$,&style=for-the-badge&color=8800ff&label=Lines%20of%20Code">
 </div>  
 
 </br>
@@ -25,7 +26,7 @@ You'll get all relevant information through the bot.
 | /today | Immediately sends you todays meals. |
 | /tomorrow | Immediately sends you tomorrows meals. |
 | /canteen | Select your canteen. |
-| /allergens | Receive information abeout alergeens. |
+| /allergens | Receive information abeout allergens. |
 | /share | Get a QR-Code for sharing the Bot. |
 | /code | Get Link to GitHub repo. |
 | /issue | Create new issue in the GitHub repo. |

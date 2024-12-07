@@ -1,9 +1,0 @@
-tsconfig.json
-package.json
-package-lock.json
-README.md
-Procfile
-LICENSE.md
-.gitignore
-dependabot.yml
-codeql.yml
