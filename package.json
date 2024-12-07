@@ -24,6 +24,7 @@
   "devDependencies": {
     "@grammyjs/types": "^3.16.0",
     "@types/jsdom": "^21.1.7",
+    "@types/moment": "^2.11.29",
     "@types/mongoose": "^5.11.96",
     "@types/node": "^22.10.1",
     "jsdom": "^25.0.1",

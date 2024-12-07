@@ -1,12 +1,16 @@
 {
   "compilerOptions": {
     "skipLibCheck": true,
+    "target": "ESNext",
     "outDir": "./dist",
     "downlevelIteration": true,
-    "types": ["node"],
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "types": [],
     "lib": [
-        "ESNext",
-        "DOM"
+        "ESNext"
     ]
   }, 
   "include": [

@@ -4,7 +4,7 @@ import * as schedule from 'node-schedule';
 import { start_bot, suggest_commands } from './telegram_bot';
 import { parseMessages, final_messages, escape_message, random_greeting } from './build_messages';
 import { request_relevant_menus } from './request_menus';
-import * as moment from 'moment';
+import moment from 'moment';
 import { check_users_with_time } from "./database_operations";
 import { IUser } from "./interfaces";
 

@@ -1,4 +1,4 @@
-import * as moment from 'moment';
+import moment from "moment"
 import { all_canteens } from './definitions'; 
 import { IMenu } from './interfaces';
 import { create_parser, Parser } from './parse_canteens';

@@ -1,8 +1,7 @@
 import { todays_menus, tomorrows_menus } from "./request_menus";
 import { all_canteens, greetings } from "./definitions"; 
 import { IMenu } from "./interfaces";
-import * as moment from 'moment';
-
+import moment from "moment"
 
 // Object with all completely parsed Messages
 export let final_messages: Record<string, Record<string, string>> = {

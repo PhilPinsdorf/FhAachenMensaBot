@@ -1,6 +1,6 @@
 import { bot, send_message } from ".";
-import { all_canteens } from "./definitions"; 
-import * as sanitize from "mongo-sanitize";
+import { all_canteens, replys } from "./definitions"; 
+import sanitize from "mongo-sanitize";
 import { Context, InlineKeyboard, InputFile } from "grammy";
 import { user_exists, add_user, remove_user, update_canteen, update_time, update_allergens } from "./database_operations"
 import { escape_message } from "./build_messages";
@@ -12,6 +12,7 @@ export function start_bot(): Promise<void> {
 
         bot.use(async (ctx, next) => {
             const originalReply = ctx.reply;
+            const originalEditMessageText = ctx.editMessageText;
   
             ctx.reply = async (...args) => {
                 if (typeof args[0] === 'string') {
@@ -20,6 +21,14 @@ export function start_bot(): Promise<void> {
             
                 return originalReply.apply(ctx, args);
             };
+
+            ctx.editMessageText = async (...args) => {
+                if (typeof args[0] === 'string') {
+                    args[0] = escape_message(args[0]); 
+                }
+            
+                return originalEditMessageText.apply(ctx, args);
+              };
         
             await next();
         });
@@ -31,13 +40,13 @@ export function start_bot(): Promise<void> {
             
             if(user) {
                 ctx.reply(
-                    `Danke ${name}, dass du dich für den Dienst angemeldet hast! \n\nDu bekommst ab jetzt jeden Tag um \*9:30 Uhr\* eine Benachrichtigung darüber, was es heute in deiner Aachener Mensa zu essen gibt. Falls du zwischendurch nachgucken möchtest, was es heute und morgen in der Mensa gibt, kannst du das jederzeit mit /today und /tomorrow tun. Falls du Updates von einer anderen Mensa bekommen möchtest, kannst du deine Mensa mit /canteen ändern. Die Mensa Eupener Straße ist standartmäßig am Anfang ausgewählt. Falls du Updates zu einer anderen Zeit bekommen möchtest, kannst du deine Zeit mit /time ändern. Du kannst dir Infos über Allergene und Inhaltsstoffe mit /allergens zu deiner täglichen Nachicht hinzufügen. \n\nMit /stop kannst du dich von diesem Dienst wieder abmelden. \n\nBei Rückfragen oder Bugs, schreibe @philpinsdorf auf Telegram an.`,
+                    replys.start(name),
                     { parse_mode: "MarkdownV2" }
                 );
                 return;
             } 
             
-            ctx.reply(`Du hast dich bereits registriert.`);
+            ctx.reply(replys.already_registered());
         });
 
 
@@ -47,13 +56,13 @@ export function start_bot(): Promise<void> {
 
             if(user) {
                 ctx.reply(
-                    `Vielen Dank ${name}, dass du meinen Dienst verwendet hast. \n\nDu hast hiermit deinen Account \*gelöscht\* und wirst in Zukunft \*keine Benachichtigungen\* mehr bekommen. \n\nFalls du dich doch umentscheiden solltest kannst du jederzeit dich mit /start wieder anmelden.`,
+                    replys.stop(name),
                     { parse_mode: "MarkdownV2" }
                 );
                 return; 
             }
 
-            ctx.reply(`Dein Account wurde bereits gelöscht.`);
+            ctx.reply(replys.already_deleted());
         });
 
 
@@ -62,7 +71,7 @@ export function start_bot(): Promise<void> {
             const user = await user_exists(chat_id);
 
             if(!user) {
-                ctx.reply('Du musst diesen Dienst erst mit /start abbonieren!');
+                ctx.reply(replys.only_after_start());
                 console.warn(`${name}/${chat_id}: Failed to read todays Meals.`);
                 return;
             }
@@ -77,7 +86,7 @@ export function start_bot(): Promise<void> {
             const user = await user_exists(chat_id);
 
             if(!user) {
-                ctx.reply('Du musst diesen Dienst erst mit /start abbonieren!');
+                ctx.reply(replys.only_after_start());
                 console.warn(`${name}/${chat_id}: Failed to read tomorrows Meals.`);
                 return;
             }
@@ -92,12 +101,12 @@ export function start_bot(): Promise<void> {
             const user = await user_exists(chat_id);
 
             if(!user) {
-                ctx.reply('Du musst diesen Dienst erst mit /start abbonieren!');
+                ctx.reply(replys.only_after_start());
                 console.warn(`${name}/${chat_id}: Failed to select new canteen.`);
                 return;
             }
 
-            ctx.reply(`\*Wähle deine Mensa aus:\*`, { parse_mode: "MarkdownV2", reply_markup: canteen_keyboard });
+            ctx.reply(replys.select_canteen(), { parse_mode: "MarkdownV2", reply_markup: canteen_keyboard });
             console.log(`User ${name}/${chat_id}: Started selecting canteen process.`);
         });
 
@@ -107,14 +116,14 @@ export function start_bot(): Promise<void> {
             const user = await update_allergens(chat_id);
 
             if(!user) {
-                ctx.reply('Du musst diesen Dienst erst mit /start abbonieren!');
+                ctx.reply(replys.only_after_start());
                 return;
             }
 
             if(user.allergens) {
-                ctx.reply(`Du bekommst absofort alle updates \*mit\* Allergie & Inhaltsstoff Angaben.\n\n\*Ich übernehme keine Haftung für die vollständigkeit und die Richtigkeit dieser Daten. Die Daten können falsch oder unvollständig sein.\*`, { parse_mode: "MarkdownV2" });
+                ctx.reply(replys.with_allergenes(), { parse_mode: "MarkdownV2" });
             } else {
-                ctx.reply(`Du bekommst absofort alle updates \*ohne\* Allergie & Inhaltsstoff Angaben.`, { parse_mode: "MarkdownV2" });
+                ctx.reply(replys.without_allergenes(), { parse_mode: "MarkdownV2" });
             }
         });
 
@@ -128,14 +137,14 @@ export function start_bot(): Promise<void> {
 
         bot.command('code', (ctx) => {
             const { chat_id, name } = get_user_info(ctx);
-            ctx.reply('https://github.com/PhilPinsdorf/FhAachenMensaBot');
+            ctx.reply(replys.code());
             console.log(`${name}/${chat_id}: Requested GitHub Repo.`);
         });
 
 
         bot.command('issue', (ctx) => {
             const { chat_id, name } = get_user_info(ctx);
-            ctx.reply('Report your bug by createing a new Issue here:\nhttps://github.com/PhilPinsdorf/FhAachenMensaBot/issues/new\n\nAlternatively you can write @philpinsdorf on Telegram.');
+            ctx.reply(replys.issue());
             console.log(`${name}/${chat_id}: Requested Issue Page.`);
         });
 
@@ -145,7 +154,7 @@ export function start_bot(): Promise<void> {
             const message_arguments: string[] = ctx.match.split(' ');
 
             if(message_arguments.length != 1) {
-                ctx.reply('Um deine Zeit der Nachicht zu ändern gebe bitte den Command \*\'/time hh\\:mm\'\* ein. \nHierbei ist die Zeit wievolgt anzugeben: \n08:13, 15:42, 11:18 etc. \n\n\*Bitte bechachte\*, dass die neuen Gerichte um 3:00 morgens eingelesen werden. Anfragen davor führen dazu, dass du das Menü von gestern geschickt bekommst.', { parse_mode: "MarkdownV2" });
+                ctx.reply(replys.time_no_args(), { parse_mode: "MarkdownV2" });
                 console.log(`User ${name}/${chat_id}: Started Time Update Process.`);
                 return;
             }
@@ -154,7 +163,7 @@ export function start_bot(): Promise<void> {
             let regex: RegExp = /[0-1][0-9]:[0-5][0-9]|2[0-3]:[0-5][0-9]/
 
             if(!regex.test(message_arguments[0])) {
-                ctx.reply(`Die Uhrzeit wurde nicht richtig eingegeben! \nBitte gebe die Uhrzeit wie folgt ein: \n\*\'/time hh:mm\'\*\n\n\*Beispiel:\* '/time 08:45'`, { parse_mode: "MarkdownV2" });
+                ctx.reply(replys.time_wrong_format(), { parse_mode: "MarkdownV2" });
                 console.log(`${name}/${chat_id}: Tried to update time with wrong format.`);
                 return;
             }
@@ -163,11 +172,11 @@ export function start_bot(): Promise<void> {
             const user = await update_time(chat_id, time);
 
             if(!user) {
-                ctx.reply('Du musst diesen Dienst erst mit /start abbonieren!');
+                ctx.reply(replys.only_after_start());
                 return;
             }
 
-            ctx.reply(`Du erhältst ab sofort Updates um \*${time}\*!`, { parse_mode: "MarkdownV2" });
+            ctx.reply(replys.time(time), { parse_mode: "MarkdownV2" });
         });
 
 
@@ -177,12 +186,12 @@ export function start_bot(): Promise<void> {
             const user = await update_canteen(chat_id, canteen_id);
 
             if(!user) {
-                ctx.reply('Du musst diesen Dienst erst mit /start abbonieren!');
+                ctx.reply(replys.only_after_start());
                 return;
             }
 
             const canteen = all_canteens.find(c => c.canteen_id === canteen_id);
-            ctx.editMessageText(`Du erhältst ab sofort tägliche Updates von der \*${canteen.name}\*.`, { parse_mode: 'MarkdownV2' });
+            ctx.editMessageText(replys.canteen(canteen.name), { parse_mode: 'MarkdownV2' });
         });
 
 
