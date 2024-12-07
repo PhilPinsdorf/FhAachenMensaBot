@@ -1,4 +1,5 @@
-import { IUser, User } from './global';
+import { IUser } from './interfaces';
+import { User } from './database_shemas';
 
 export async function user_exists(chat_id: number): Promise<IUser> {
     try {
@@ -81,6 +82,21 @@ export async function update_time(chat_id: number, new_time: string): Promise<IU
         console.warn(`${user.name}/${chat_id}: Failed to update time.`);
     } catch (err) {
         console.error(`Database Error in update_time:\n${err}`);
+    }
+}
+
+export async function update_allergens(chat_id: number): Promise<IUser> {
+    try {
+        const user = await User.findOneAndUpdate({ chat_id: chat_id }, [ { "$set": { allergens: { "$not": "$allergens" } } } ], { new: true });
+
+        if (user) {
+            console.log(`${user.name}/${chat_id}: Updated allergens to ${user.allergens}.`);
+            return user; 
+        } 
+        
+        console.warn(`${user.name}/${chat_id}: Failed to update allergens.`);
+    } catch (err) {
+        console.error(`Database Error in update_allergens:\n${err}`);
     }
 }
 

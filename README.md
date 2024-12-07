@@ -25,6 +25,7 @@ You'll get all relevant information through the bot.
 | /today | Immediately sends you todays meals. |
 | /tomorrow | Immediately sends you tomorrows meals. |
 | /canteen | Select your canteen. |
+| /allergens | Receive information abeout alergeens. |
 | /share | Get a QR-Code for sharing the Bot. |
 | /code | Get Link to GitHub repo. |
 | /issue | Create new issue in the GitHub repo. |
@@ -35,7 +36,6 @@ You'll get all relevant information through the bot.
 | /once-tomorrow | Get the option to once request tomorrows meals for another canteen. (Coming Soon) |
 | /once-everyday | Get the option to once request any days meals for another canteen. (Coming Soon) |
 | /displayname | Change your personal Display Name. (Coming Soon) |
-| /alergy | Receive information abeout alergeens. (Coming Soon) |
 
 
 # ToDo
@@ -55,11 +55,11 @@ You'll get all relevant information through the bot.
 - [ ] Request messages once for a different canteen
 - [ ] Get error messages when Bot is down
 - [ ] Make it an option to update the display Name
-- [ ] Add optional Allergie tags
+- [x] Add optional Allergie tags
 - [ ] Select Multiple canteens and only get the difference
-- [ ] Fix /share command
-- [ ] Mark Vegan and Vegetarian Meals as such
-- [ ] Change Times Meals get loaded
+- [x] Fix /share command
+- [x] Mark Vegan and Vegetarian Meals as such
+- [x] Change Times Meals get loaded
 - [ ] Send out an Update to all Users if meals change throuout the day and they already received their Message
 
 # Far in the future

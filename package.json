@@ -11,11 +11,11 @@
   "author": "philpinsdorf",
   "license": "MIT",
   "dependencies": {
-    "cheerio": "^1.0.0",
+    "axios": "^1.7.9",
     "grammy": "^1.32.0",
     "moment": "^2.29.4",
     "mongo-sanitize": "^1.1.0",
-    "mongoose": "^8.8.3",
+    "mongoose": "^8.8.4",
     "node-schedule": "^2.1.0"
   },
   "engines": {
@@ -23,9 +23,10 @@
   },
   "devDependencies": {
     "@grammyjs/types": "^3.16.0",
-    "@types/cheerio": "^0.22.35",
+    "@types/jsdom": "^21.1.7",
     "@types/mongoose": "^5.11.96",
     "@types/node": "^22.10.1",
+    "jsdom": "^25.0.1",
     "typescript": "^5.7.2"
   }
 }

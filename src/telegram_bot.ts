@@ -1,11 +1,11 @@
 import { bot, send_message } from ".";
-import { all_canteens } from './global';
+import { all_canteens } from "./definitions"; 
 import * as sanitize from "mongo-sanitize";
 import { Context, InlineKeyboard, InputFile } from "grammy";
-import { user_exists, add_user, remove_user, update_canteen, update_time } from "./database_operations"
+import { user_exists, add_user, remove_user, update_canteen, update_time, update_allergens } from "./database_operations"
 
 // Returns a promise, that starts the bot
-export function startBot(): Promise<void> {
+export function start_bot(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         const canteen_keyboard = generate_canteen_keyboard()
 
@@ -16,7 +16,7 @@ export function startBot(): Promise<void> {
             
             if(user) {
                 ctx.reply(
-                    `Danke ${name}, dass du dich für den Dienst angemeldet hast\\! \n\nDu bekommst ab jetzt jeden Tag um \*9:30 Uhr\* eine Benachrichtigung darüber, was es heute in deiner Aachener Mensa zu essen gibt\\. Falls du zwischendurch nachgucken möchtest, was es heute und morgen in der Mensa gibt, kannst du das jederzeit mit /today und /tomorrow tun\\. Falls du Updates von einer anderen Mensa bekommen möchtest, kannst du deine Mensa mit /select ändern\\. Die Mensa Eupener Straße ist standartmäßig am Anfang ausgewählt\\. Falls du Updates zu einer anderen Zeit bekommen möchtest, kannst du deine Zeit mit /time ändern\\. \n\nMit /stop kannst du dich von diesem Dienst wieder abmelden\\. \n\nBei Rückfragen oder Bugs, schreibe \\@philpinsdorf auf Telegram an\\.`,
+                    `Danke ${name}, dass du dich für den Dienst angemeldet hast\\! \n\nDu bekommst ab jetzt jeden Tag um \*9:30 Uhr\* eine Benachrichtigung darüber, was es heute in deiner Aachener Mensa zu essen gibt\\. Falls du zwischendurch nachgucken möchtest, was es heute und morgen in der Mensa gibt, kannst du das jederzeit mit /today und /tomorrow tun\\. Falls du Updates von einer anderen Mensa bekommen möchtest, kannst du deine Mensa mit /canteen ändern\\. Die Mensa Eupener Straße ist standartmäßig am Anfang ausgewählt\\. Falls du Updates zu einer anderen Zeit bekommen möchtest, kannst du deine Zeit mit /time ändern\\. Du kannst dir Infos über Allergene und Inhaltsstoffe mit /allergens zu deiner täglichen Nachicht hinzufügen\\. \n\nMit /stop kannst du dich von diesem Dienst wieder abmelden\\. \n\nBei Rückfragen oder Bugs, schreibe \\@philpinsdorf auf Telegram an\\.`,
                     { parse_mode: "MarkdownV2" }
                 );
                 return;
@@ -42,7 +42,7 @@ export function startBot(): Promise<void> {
         });
 
 
-        bot.command(['request', 'today'], async (ctx) => {
+        bot.command('today', async (ctx) => {
             const { chat_id, name } = get_user_info(ctx);
             const user = await user_exists(chat_id);
 
@@ -52,8 +52,8 @@ export function startBot(): Promise<void> {
                 return;
             }
 
-            await send_message(chat_id, user.name, 'today', user.canteen_id);
-            console.warn(`${user.name}/${user.chat_id}: Read todays Meals.`);
+            await send_message(user, 'today');
+            console.warn(`${name}/${chat_id}: Read todays Meals.`);
         });
 
 
@@ -67,12 +67,12 @@ export function startBot(): Promise<void> {
                 return;
             }
 
-            await send_message(chat_id, user.name, 'tomorrow', user.canteen_id);
-            console.warn(`${user.name}/${user.chat_id}: Read tomorrows Meals.`);
+            await send_message(user, 'tomorrow');
+            console.warn(`${name}/${chat_id}: Read tomorrows Meals.`);
         });
 
 
-        bot.command(['select', 'canteen'], async (ctx) => {
+        bot.command('canteen', async (ctx) => {
             const { chat_id, name } = get_user_info(ctx);
             const user = await user_exists(chat_id);
 
@@ -84,6 +84,23 @@ export function startBot(): Promise<void> {
 
             ctx.reply(`\*Wähle deine Mensa aus:\*`, { parse_mode: "MarkdownV2", reply_markup: canteen_keyboard });
             console.log(`User ${name}/${chat_id}: Started selecting canteen process.`);
+        });
+
+
+        bot.command('allergens', async (ctx) => {
+            const { chat_id, name } = get_user_info(ctx);
+            const user = await update_allergens(chat_id);
+
+            if(!user) {
+                ctx.reply('Du musst diesen Dienst erst mit /start abbonieren!');
+                return;
+            }
+
+            if(user.allergens) {
+                ctx.reply(`Du bekommst absofort alle updates \*mit\* Allergie & Inhaltsstoff Angaben\\.\n\n\*Ich übernehme keine Haftung für die vollständigkeit und die Richtigkeit dieser Daten\\. Die Daten können falsch oder unvollständig sein\\.\*`, { parse_mode: "MarkdownV2" });
+            } else {
+                ctx.reply(`Du bekommst absofort alle updates \*ohne\* Allergie & Inhaltsstoff Angaben\\.`, { parse_mode: "MarkdownV2" });
+            }
         });
 
 
@@ -101,9 +118,9 @@ export function startBot(): Promise<void> {
         });
 
 
-        bot.command(['bug', 'issue'], (ctx) => {
+        bot.command('issue', (ctx) => {
             const { chat_id, name } = get_user_info(ctx);
-            ctx.reply('Report your bug by createing a new Issue here:\nhttps://github.com/PhilPinsdorf/FhAachenMensaBot/issues/new');
+            ctx.reply('Report your bug by createing a new Issue here:\nhttps://github.com/PhilPinsdorf/FhAachenMensaBot/issues/new\n\nAlternatively you can write @philpinsdorf on Telegram.');
             console.log(`${name}/${chat_id}: Requested Issue Page.`);
         });
 
@@ -139,9 +156,9 @@ export function startBot(): Promise<void> {
         });
 
 
-        bot.callbackQuery(/canteen-([1-7])/g, async (ctx) => {
+        bot.callbackQuery(/update-canteen-(10|[1-9])/g, async (ctx) => {
             const chat_id = ctx.chat.id; 
-            const canteen_id = Number(ctx.match[1]);
+            const canteen_id = Number(ctx.callbackQuery.data.substring(15));
             const user = await update_canteen(chat_id, canteen_id);
 
             if(!user) {
@@ -150,7 +167,7 @@ export function startBot(): Promise<void> {
             }
 
             const canteen = all_canteens.find(c => c.canteen_id === canteen_id);
-            ctx.editMessageText(`Du erhältst ab sofort tägliche Updates von der Mensa \*${canteen.name}\*\\.`, { parse_mode: 'MarkdownV2' });
+            ctx.editMessageText(`Du erhältst ab sofort tägliche Updates von der \*${canteen.name}\*\\.`, { parse_mode: 'MarkdownV2' });
         });
 
 
@@ -166,6 +183,7 @@ export async function suggest_commands(): Promise<void> {
         { command: "tomorrow", description: "Immediately sends you tomorrows meals." },
         { command: "canteen", description: "Select your canteen." },
         { command: "time", description: "Select Time user gets the Message." },
+        { command: "allergens", description: "Add Allergie annotations to your meals." },
         { command: "share", description: "Get a QR-Code for sharing the Bot." },
         { command: "code", description: "Get Link to GitHub repo." },
         { command: "issue", description: "Create new issue in the GitHub repo." },
@@ -176,7 +194,7 @@ export async function suggest_commands(): Promise<void> {
 function generate_canteen_keyboard(): InlineKeyboard {
     const keyboardButtons = []
     for(let canteen of all_canteens) 
-        keyboardButtons.push([InlineKeyboard.text(canteen.name, `canteen-${canteen.canteen_id}`)]);
+        keyboardButtons.push([InlineKeyboard.text(canteen.name, `update-canteen-${canteen.canteen_id}`)]);
     return InlineKeyboard.from(keyboardButtons)
 }
 

@@ -3,9 +3,13 @@
     "skipLibCheck": true,
     "outDir": "./dist",
     "downlevelIteration": true,
-    "types": ["node"]
+    "types": ["node"],
+    "lib": [
+        "ESNext",
+        "DOM"
+    ]
   }, 
   "include": [
     "src/**/*.ts"
-  ]
+  ],
 }
