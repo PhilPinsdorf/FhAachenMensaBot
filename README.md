@@ -49,20 +49,20 @@ You'll get all relevant information through the bot.
 - [x] Request QR-Code for sharing
 - [x] User gets Link to Issue page.
 - [x] User can select time, when they want to receive their Message.
-- [ ] Add Broadcast Tool for Admin Messages
+- [x] Add Broadcast Tool for Admin Messages
+- [x] Add optional Allergie tags
+- [x] Fix /share command
+- [x] Mark Vegan and Vegetarian Meals as such
+- [x] Change Times Meals get loaded
+- [x] Delete users, that blocked the Bot
 - [ ] Add Day Seletion
 - [ ] Add daily Admin Stats
 - [ ] Send Opening Times of Selected Canteen
 - [ ] Request messages once for a different canteen
 - [ ] Get error messages when Bot is down
 - [ ] Make it an option to update the display Name
-- [x] Add optional Allergie tags
 - [ ] Select Multiple canteens and only get the difference
-- [x] Fix /share command
-- [x] Mark Vegan and Vegetarian Meals as such
-- [x] Change Times Meals get loaded
 - [ ] Send out an Update to all Users if meals change throuout the day and they already received their Message
-- [ ] Delete users, that blocked the Bot
 
 # Far in the future
 - [ ] Rate Meals and receive your rating if something simmilar is on the menu
