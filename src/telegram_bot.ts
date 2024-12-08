@@ -89,7 +89,7 @@ export function start_bot(): Promise<void> {
 
         bot.command('allergens', async (ctx) => {
             const { chat_id, name } = get_user_info(ctx);
-            const user = await update_allergens(chat_id);
+            const user = await update_allergens(chat_id, name);
 
             if(!user) {
                 ctx.reply(replys.only_after_start());
@@ -170,7 +170,7 @@ export function start_bot(): Promise<void> {
             }
             
             const time = message_arguments[0];
-            const user = await update_time(chat_id, time);
+            const user = await update_time(chat_id, time, name);
 
             if(!user) {
                 ctx.reply(replys.only_after_start());
@@ -182,9 +182,9 @@ export function start_bot(): Promise<void> {
 
 
         bot.callbackQuery(/update-canteen-(10|[1-9])/g, async (ctx) => {
-            const chat_id = ctx.chat.id; 
+            const { chat_id, name } = get_user_info(ctx);
             const canteen_id = Number(ctx.callbackQuery.data.substring(15));
-            const user = await update_canteen(chat_id, canteen_id);
+            const user = await update_canteen(chat_id, name, canteen_id);
 
             if(!user) {
                 ctx.reply(replys.only_after_start());

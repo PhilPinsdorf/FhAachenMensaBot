@@ -64,46 +64,46 @@ export async function update_name(chat_id: number, new_name: string): Promise<IU
     }
 }
 
-export async function update_canteen(chat_id: number, new_canteen_id: number): Promise<IUser> {
+export async function update_canteen(chat_id: number, name: string, new_canteen_id: number): Promise<IUser> {
     try {
         const user = await User.findOneAndUpdate({ chat_id: chat_id }, { canteen_id: new_canteen_id }, { new: true });
 
         if (user) {
-            console.log(`${user.name}/${chat_id}: Updated canteen to ${new_canteen_id}.`);
+            console.log(`${name}/${chat_id}: Updated canteen to ${new_canteen_id}.`);
             return user; 
         } 
         
-        console.warn(`${user.name}/${chat_id}: Failed to update canteen.`);
+        console.warn(`${name}/${chat_id}: Failed to update canteen.`);
     } catch (err) {
         console.error(`[Database] Error in update_canteen:\n${err}`);
     }
 }
 
-export async function update_time(chat_id: number, new_time: string): Promise<IUser> {
+export async function update_time(chat_id: number, name: string, new_time: string): Promise<IUser> {
     try {
         const user = await User.findOneAndUpdate({ chat_id: chat_id }, { time: new_time }, { new: true });
 
         if (user) {
-            console.log(`${user.name}/${chat_id}: Updated time to ${new_time}.`);
+            console.log(`${name}/${chat_id}: Updated time to ${new_time}.`);
             return user; 
         } 
         
-        console.warn(`${user.name}/${chat_id}: Failed to update time.`);
+        console.warn(`${name}/${chat_id}: Failed to update time.`);
     } catch (err) {
         console.error(`[Database] Error in update_time:\n${err}`);
     }
 }
 
-export async function update_allergens(chat_id: number): Promise<IUser> {
+export async function update_allergens(chat_id: number, name: string): Promise<IUser> {
     try {
         const user = await User.findOneAndUpdate({ chat_id: chat_id }, [ { "$set": { allergens: { "$not": "$allergens" } } } ], { new: true });
 
         if (user) {
-            console.log(`${user.name}/${chat_id}: Updated allergens to ${user.allergens}.`);
+            console.log(`${name}/${chat_id}: Updated allergens to ${user.allergens}.`);
             return user; 
         } 
         
-        console.warn(`${user.name}/${chat_id}: Failed to update allergens.`);
+        console.warn(`${name}/${chat_id}: Failed to update allergens.`);
     } catch (err) {
         console.error(`[Database] Error in update_allergens:\n${err}`);
     }
