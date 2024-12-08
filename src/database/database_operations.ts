@@ -1,4 +1,4 @@
-import { IUser } from './interfaces';
+import { IUser } from '../types/interfaces';
 import { User } from './database_shemas';
 
 export async function user_exists(chat_id: number): Promise<IUser> {
@@ -35,11 +35,11 @@ export async function add_user(chat_id: number, name: string): Promise<IUser> {
     }
 }
 
-export async function remove_user(chat_id: number, name: string): Promise<IUser> {
+export async function remove_user(chat_id: number, name: string, blocked: boolean): Promise<IUser> {
     try {
         const user = await User.findOneAndDelete({ chat_id: chat_id });
         if (user) {
-            console.log(`${name}/${chat_id}: Deleted Account.`);
+            console.log(`${name}/${chat_id}: Deleted Account.${blocked ? " (Blocked)" : ""}`);
             return user;
         }
 
@@ -69,7 +69,7 @@ export async function update_canteen(chat_id: number, new_canteen_id: number): P
         const user = await User.findOneAndUpdate({ chat_id: chat_id }, { canteen_id: new_canteen_id }, { new: true });
 
         if (user) {
-            console.log(`${user.name}/${chat_id}: Updated canteen.`);
+            console.log(`${user.name}/${chat_id}: Updated canteen to ${new_canteen_id}.`);
             return user; 
         } 
         

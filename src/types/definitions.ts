@@ -75,7 +75,9 @@ export const greetings: string[] = [
   "Schönen guten Tag",
   "Huhu",
   "Mahlzeit",
-  "Was geht"
+  "Was geht",
+  "Hej",
+  "Hallihallo",
 ];
 
 export const replys: { [key: string]: (...args: string[]) => string } = {
@@ -88,7 +90,7 @@ export const replys: { [key: string]: (...args: string[]) => string } = {
   with_allergenes: () => `Du bekommst absofort alle updates \*mit\* Allergie & Inhaltsstoff Angaben.\n\n\*Ich übernehme keine Haftung für die vollständigkeit und die Richtigkeit dieser Daten. Die Daten können falsch oder unvollständig sein.\*`,
   without_allergenes: () => `Du bekommst absofort alle updates \*ohne\* Allergie & Inhaltsstoff Angaben.`,
   code: () => `https://github.com/PhilPinsdorf/FhAachenMensaBot`,
-  issue: () =>  `Report your bug by createing a new Issue here:\nhttps://github.com/PhilPinsdorf/FhAachenMensaBot/issues/new\n\nAlternatively you can write @philpinsdorf on Telegram.`,
+  issue: () =>  `Report your bug by creating a new Issue here:\nhttps://github.com/PhilPinsdorf/FhAachenMensaBot/issues/new\n\nAlternatively you can write @philpinsdorf on Telegram.`,
   time_no_args: () => `Um deine Zeit der Nachicht zu ändern gebe bitte den Command \*\'/time hh\\:mm\'\* ein. \nHierbei ist die Zeit wievolgt anzugeben: \n08:13, 15:42, 11:18 etc. \n\n\*Bitte bechachte\*, dass die neuen Gerichte um 3:00 morgens eingelesen werden. Anfragen davor führen dazu, dass du das Menü von gestern geschickt bekommst.`,
   time_wrong_format: () => `Die Uhrzeit wurde nicht richtig eingegeben! \nBitte gebe die Uhrzeit wie folgt ein: \n\*\'/time hh:mm\'\*\n\n\*Beispiel:\* '/time 08:45'`,
   time: (time) => `Du erhältst ab sofort Updates um \*${time}\*!`,

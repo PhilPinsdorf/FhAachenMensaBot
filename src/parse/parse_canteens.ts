@@ -5,8 +5,8 @@
 */
 
 import { JSDOM } from 'jsdom';
-import { all_canteens } from './definitions'; 
-import { ILegend, IParserConfig,  } from './interfaces';
+import { all_canteens } from '../types/definitions'; 
+import { ILegend, IParserConfig,  } from '../types/interfaces';
 
 class Canteen {
     private days: { [key: string]: any } = {};

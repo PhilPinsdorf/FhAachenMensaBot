@@ -62,12 +62,16 @@ You'll get all relevant information through the bot.
 - [x] Mark Vegan and Vegetarian Meals as such
 - [x] Change Times Meals get loaded
 - [ ] Send out an Update to all Users if meals change throuout the day and they already received their Message
+- [ ] Delete users, that blocked the Bot
 
 # Far in the future
 - [ ] Rate Meals and receive your rating if something simmilar is on the menu
 
 # Please Read
 The new meals are loaded at 3:00am. Any requests before that time will give you yesterdays meals.
+
+# Version
+2.0.0
 
 # Author
 Phil Pinsdorf

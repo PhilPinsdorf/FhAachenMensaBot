@@ -1,4 +1,4 @@
-import { IMeal, IMenu } from "./interfaces";
+import { IMeal, IMenu } from "../types/interfaces";
 
 // ToDo: Make Typesafe
 export function create_menue(meals: any[]): IMenu {

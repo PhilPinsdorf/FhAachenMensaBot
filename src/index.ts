@@ -2,9 +2,9 @@ import { Bot } from "grammy";
 import { connect } from 'mongoose';
 import * as schedule from 'node-schedule'; 
 import { start_bot, suggest_commands } from './telegram_bot';
-import { parseMessages } from './build_messages';
-import { request_relevant_menus } from './request_menus';
-import { check_sheduled_messages } from "./send_messages";
+import { parseMessages } from './messages/build_messages';
+import { request_relevant_menus } from './parse/request_menus';
+import { check_sheduled_messages } from "./messages/send_messages";
 
 export const bot = new Bot(process.env.BOT_SECRET as string);
 const dbUri = process.env.DB_URI as string;

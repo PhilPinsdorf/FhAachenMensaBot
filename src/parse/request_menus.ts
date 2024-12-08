@@ -1,6 +1,6 @@
 import moment from "moment"
-import { all_canteens } from './definitions'; 
-import { IMenu } from './interfaces';
+import { all_canteens } from '../types/definitions'; 
+import { IMenu } from '../types/interfaces';
 import { create_parser, Parser } from './parse_canteens';
 import { create_menue } from './parse_menus';
 

@@ -1,39 +1,15 @@
 import { bot } from ".";
-import { all_canteens, replys } from "./definitions"; 
+import { all_canteens, replys } from "./types/definitions"; 
 import sanitize from "mongo-sanitize";
 import { Context, InlineKeyboard, InputFile } from "grammy";
-import { user_exists, add_user, remove_user, update_canteen, update_time, update_allergens } from "./database_operations"
-import { escape_message } from "./build_messages";
-import { broadcast_message, send_message } from "./send_messages";
+import { user_exists, add_user, remove_user, update_canteen, update_time, update_allergens } from "./database/database_operations"
+import { escape_message } from "./messages/build_messages";
+import { broadcast_message, send_message } from "./messages/send_messages";
 
 // Returns a promise, that starts the bot
 export function start_bot(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         const canteen_keyboard = generate_canteen_keyboard()
-
-
-        bot.use(async (ctx, next) => {
-            const originalReply = ctx.reply;
-            const originalEditMessageText = ctx.editMessageText;
-  
-            ctx.reply = async (...args) => {
-                if (typeof args[0] === 'string') {
-                    args[0] = escape_message(args[0]); 
-                }
-            
-                return originalReply.apply(ctx, args);
-            };
-
-            ctx.editMessageText = async (...args) => {
-                if (typeof args[0] === 'string') {
-                    args[0] = escape_message(args[0]); 
-                }
-            
-                return originalEditMessageText.apply(ctx, args);
-              };
-        
-            await next();
-        });
 
 
         bot.command('start', async (ctx) => {
@@ -42,7 +18,7 @@ export function start_bot(): Promise<void> {
             
             if(user) {
                 ctx.reply(
-                    replys.start(name),
+                    escape_message(replys.start(name)),
                     { parse_mode: "MarkdownV2" }
                 );
                 return;
@@ -54,11 +30,11 @@ export function start_bot(): Promise<void> {
 
         bot.command('stop', async (ctx) => {
             const { chat_id, name } = get_user_info(ctx);
-            const user = await remove_user(chat_id, name);
+            const user = await remove_user(chat_id, name, false);
 
             if(user) {
                 ctx.reply(
-                    replys.stop(name),
+                    escape_message(replys.stop(name)),
                     { parse_mode: "MarkdownV2" }
                 );
                 return; 
@@ -79,7 +55,6 @@ export function start_bot(): Promise<void> {
             }
 
             await send_message(user, 'today');
-            console.log(`${name}/${chat_id}: Read todays Meals.`);
         });
 
 
@@ -94,7 +69,6 @@ export function start_bot(): Promise<void> {
             }
 
             await send_message(user, 'tomorrow');
-            console.log(`${name}/${chat_id}: Read tomorrows Meals.`);
         });
 
 
@@ -108,7 +82,7 @@ export function start_bot(): Promise<void> {
                 return;
             }
 
-            ctx.reply(replys.select_canteen(), { parse_mode: "MarkdownV2", reply_markup: canteen_keyboard });
+            ctx.reply(escape_message(replys.select_canteen()), { parse_mode: "MarkdownV2", reply_markup: canteen_keyboard });
             console.log(`${name}/${chat_id}: Started selecting canteen process.`);
         });
 
@@ -123,9 +97,9 @@ export function start_bot(): Promise<void> {
             }
 
             if(user.allergens) {
-                ctx.reply(replys.with_allergenes(), { parse_mode: "MarkdownV2" });
+                ctx.reply(escape_message(replys.with_allergenes()), { parse_mode: "MarkdownV2" });
             } else {
-                ctx.reply(replys.without_allergenes(), { parse_mode: "MarkdownV2" });
+                ctx.reply(escape_message(replys.without_allergenes()), { parse_mode: "MarkdownV2" });
             }
         });
 
@@ -134,19 +108,24 @@ export function start_bot(): Promise<void> {
             const { chat_id, name } = get_user_info(ctx);
             const user = await user_exists(chat_id);
 
-            if(!user || !user.admin) {
+            if(!user) {
+                console.warn(`${name}/${chat_id}: Failed to execute Broadcast. Not registered.`);
+                return;
+            }
+
+            if (!user.admin) {
                 console.warn(`${name}/${chat_id}: Failed to execute Broadcast. No Admin.`);
                 return;
             }
 
             if (!ctx.match.length) {
-                console.warn(`${name}/${chat_id}: Failed to execute Broadcast. No message.`);
+                console.warn(`${name}/${chat_id}: Failed to execute Broadcast. No Message.`);
                 return
             }
 
             const message = ctx.match;
+            console.log(`${name}/${chat_id}: Executed Broadcast.`);
             await broadcast_message(message);
-            console.log(`${name}/${chat_id}: Executing Broadcast.`);
         });
 
 
@@ -176,7 +155,7 @@ export function start_bot(): Promise<void> {
             const message_arguments: string[] = ctx.match.split(' ');
 
             if(message_arguments.length != 1) {
-                ctx.reply(replys.time_no_args(), { parse_mode: "MarkdownV2" });
+                ctx.reply(escape_message(replys.time_no_args()), { parse_mode: "MarkdownV2" });
                 console.log(`User ${name}/${chat_id}: Started Time Update Process.`);
                 return;
             }
@@ -185,7 +164,7 @@ export function start_bot(): Promise<void> {
             let regex: RegExp = /[0-1][0-9]:[0-5][0-9]|2[0-3]:[0-5][0-9]/
 
             if(!regex.test(message_arguments[0])) {
-                ctx.reply(replys.time_wrong_format(), { parse_mode: "MarkdownV2" });
+                ctx.reply(escape_message(replys.time_wrong_format()), { parse_mode: "MarkdownV2" });
                 console.log(`${name}/${chat_id}: Tried to update time with wrong format.`);
                 return;
             }
@@ -198,7 +177,7 @@ export function start_bot(): Promise<void> {
                 return;
             }
 
-            ctx.reply(replys.time(time), { parse_mode: "MarkdownV2" });
+            ctx.reply(escape_message(replys.time(time)), { parse_mode: "MarkdownV2" });
         });
 
 
@@ -213,7 +192,7 @@ export function start_bot(): Promise<void> {
             }
 
             const canteen = all_canteens.find(c => c.canteen_id === canteen_id);
-            ctx.editMessageText(replys.canteen(canteen.name), { parse_mode: 'MarkdownV2' });
+            ctx.editMessageText(escape_message(replys.canteen(canteen.name)), { parse_mode: 'MarkdownV2' });
         });
 
 

@@ -1,8 +1,9 @@
 import moment from "moment";
-import { IUser } from "./interfaces";
-import { all_users, check_users_with_time } from "./database_operations";
-import { bot } from ".";
+import { IUser } from "../types/interfaces";
+import { all_users, check_users_with_time, remove_user } from "../database/database_operations";
+import { bot } from "..";
 import { escape_message, final_messages, random_greeting } from "./build_messages";
+import { GrammyError } from "grammy";
 
 export async function send_message(user: IUser, messageType: string): Promise<void> {
     try {
@@ -14,6 +15,10 @@ export async function send_message(user: IUser, messageType: string): Promise<vo
         console.log(`${user.name}/${user.chat_id}: Send Message ${messageType}.`);
     } catch (err) {
         console.error(`[Bot] Error in send_message ${user.name}/${user.chat_id}: ${err}.`);
+
+        if (err.error_code == 403) {
+            await remove_user(user.chat_id, user.name, true);
+        }
     }
 }
 
@@ -37,6 +42,10 @@ export async function broadcast_message(message: string): Promise<void> {
             console.log(`${user.name}/${user.chat_id}: Broadcasted Message.`);
         } catch (err) {
             console.error(`[Bot] Error in broadcast_message ${user.name}/${user.chat_id}: ${err}.`);
+
+            if (err.error_code == 403) {
+                await remove_user(user.chat_id, user.name, true);
+            }
         }
     }
 }

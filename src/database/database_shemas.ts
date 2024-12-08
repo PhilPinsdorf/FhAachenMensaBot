@@ -1,5 +1,5 @@
 import {Schema, model} from 'mongoose';
-import { IUser } from './interfaces';
+import { IUser } from '../types/interfaces';
 
 const UserShema = new Schema({
     chat_id: { 
