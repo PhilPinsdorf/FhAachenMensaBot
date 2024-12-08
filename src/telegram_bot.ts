@@ -1,14 +1,16 @@
-import { bot, send_message } from ".";
+import { bot } from ".";
 import { all_canteens, replys } from "./definitions"; 
 import sanitize from "mongo-sanitize";
 import { Context, InlineKeyboard, InputFile } from "grammy";
 import { user_exists, add_user, remove_user, update_canteen, update_time, update_allergens } from "./database_operations"
 import { escape_message } from "./build_messages";
+import { broadcast_message, send_message } from "./send_messages";
 
 // Returns a promise, that starts the bot
 export function start_bot(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         const canteen_keyboard = generate_canteen_keyboard()
+
 
         bot.use(async (ctx, next) => {
             const originalReply = ctx.reply;
@@ -77,7 +79,7 @@ export function start_bot(): Promise<void> {
             }
 
             await send_message(user, 'today');
-            console.warn(`${name}/${chat_id}: Read todays Meals.`);
+            console.log(`${name}/${chat_id}: Read todays Meals.`);
         });
 
 
@@ -92,7 +94,7 @@ export function start_bot(): Promise<void> {
             }
 
             await send_message(user, 'tomorrow');
-            console.warn(`${name}/${chat_id}: Read tomorrows Meals.`);
+            console.log(`${name}/${chat_id}: Read tomorrows Meals.`);
         });
 
 
@@ -107,7 +109,7 @@ export function start_bot(): Promise<void> {
             }
 
             ctx.reply(replys.select_canteen(), { parse_mode: "MarkdownV2", reply_markup: canteen_keyboard });
-            console.log(`User ${name}/${chat_id}: Started selecting canteen process.`);
+            console.log(`${name}/${chat_id}: Started selecting canteen process.`);
         });
 
 
@@ -125,6 +127,26 @@ export function start_bot(): Promise<void> {
             } else {
                 ctx.reply(replys.without_allergenes(), { parse_mode: "MarkdownV2" });
             }
+        });
+
+
+        bot.command('broadcast', async (ctx) => {
+            const { chat_id, name } = get_user_info(ctx);
+            const user = await user_exists(chat_id);
+
+            if(!user || !user.admin) {
+                console.warn(`${name}/${chat_id}: Failed to execute Broadcast. No Admin.`);
+                return;
+            }
+
+            if (!ctx.match.length) {
+                console.warn(`${name}/${chat_id}: Failed to execute Broadcast. No message.`);
+                return
+            }
+
+            const message = ctx.match;
+            await broadcast_message(message);
+            console.log(`${name}/${chat_id}: Executing Broadcast.`);
         });
 
 

@@ -2,11 +2,9 @@ import { Bot } from "grammy";
 import { connect } from 'mongoose';
 import * as schedule from 'node-schedule'; 
 import { start_bot, suggest_commands } from './telegram_bot';
-import { parseMessages, final_messages, escape_message, random_greeting } from './build_messages';
+import { parseMessages } from './build_messages';
 import { request_relevant_menus } from './request_menus';
-import moment from 'moment';
-import { check_users_with_time } from "./database_operations";
-import { IUser } from "./interfaces";
+import { check_sheduled_messages } from "./send_messages";
 
 export const bot = new Bot(process.env.BOT_SECRET as string);
 const dbUri = process.env.DB_URI as string;
@@ -31,30 +29,5 @@ async function run() {
     console.log('Started Chron Job to send Messages at picked Time.');
 }
 
-export async function send_message(user: IUser, messageType: string): Promise<void> {
-    try {
-        if(user.allergens) {
-            messageType += "_allergens"
-        }
-
-        await bot.api.sendMessage(user.chat_id, `${random_greeting()} ${escape_message(user.name)}\\!\n` + final_messages[messageType][user.canteen_id], { parse_mode: "MarkdownV2"  });
-        console.log(`${user.name}/${user.chat_id}: Send Message ${messageType}.`);
-    } catch (err) {
-        console.error(`Bot Error in send_message ${user.name}/${user.chat_id}: ${err}.`);
-    }
-}
-
-async function check_sheduled_messages(): Promise<void> {
-    moment.locale('de');
-    let time: string = moment().format('LT');
-    console.log(`Check for users with selected Time: ${time}.`);
-
-    const users = await check_users_with_time(time);
-    users.forEach(user => {
-        send_message(user, 'today');
-    });
-}
-
 process.once("SIGINT", () => bot.stop());
 process.once("SIGTERM", () => bot.stop());
-
