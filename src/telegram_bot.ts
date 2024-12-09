@@ -182,7 +182,9 @@ export function start_bot(): Promise<void> {
 
 
         bot.callbackQuery(/update-canteen-(10|[1-9])/g, async (ctx) => {
-            const { chat_id, name } = get_user_info(ctx);
+            // Can't use get_user_info(), because ctx object in callbackQuery is different
+            const chat_id: number = ctx.chat.id
+            const name: string= ctx.chat.first_name ?? "Undefined";
             const canteen_id = Number(ctx.callbackQuery.data.substring(15));
             const user = await update_canteen(chat_id, name, canteen_id);
 
