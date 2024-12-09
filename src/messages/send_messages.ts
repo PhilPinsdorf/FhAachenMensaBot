@@ -3,7 +3,6 @@ import { IUser } from "../types/interfaces";
 import { all_users, check_users_with_time, remove_user } from "../database/database_operations";
 import { bot } from "..";
 import { escape_message, final_messages, random_greeting } from "./build_messages";
-import { GrammyError } from "grammy";
 
 export async function send_message(user: IUser, messageType: string): Promise<void> {
     try {

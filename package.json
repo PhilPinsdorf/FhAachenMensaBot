@@ -19,7 +19,7 @@
     "node-schedule": "^2.1.0"
   },
   "engines": {
-    "node": "^22.11.0"
+    "node": "^22.12.0"
   },
   "devDependencies": {
     "@grammyjs/types": "^3.16.0",
