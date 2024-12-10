@@ -170,7 +170,7 @@ export function start_bot(): Promise<void> {
             }
             
             const time = message_arguments[0];
-            const user = await update_time(chat_id, time, name);
+            const user = await update_time(chat_id, name, time);
 
             if(!user) {
                 ctx.reply(replys.only_after_start());
