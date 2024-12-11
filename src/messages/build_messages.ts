@@ -111,12 +111,12 @@ function emoji(category: string, notes: string[], sides: string[]): string {
         return ' 🍟🍟🍟';
     }
 
-    if (notes.includes('OLV')) {
-        return ' 🌱';
-    }
-
     if (notes.includes('vegan')) {
         return ' 🌱 (vegan)';
+    }
+
+    if (notes.includes('OLV')) {
+        return ' 🌱';
     }
 
     if (notes.includes('Fische')) {
