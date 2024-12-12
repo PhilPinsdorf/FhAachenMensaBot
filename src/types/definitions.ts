@@ -1,4 +1,4 @@
-import { ICanteen } from './interfaces';
+import { ICanteen, ICanteenGroup } from './interfaces';
 
 export const all_canteens: ICanteen[] = [
   {
@@ -61,6 +61,21 @@ export const all_canteens: ICanteen[] = [
     web_suffix: "goethestrasse-w.html",
     canteen_id: 10,
   },
+];
+
+// groups have to use a canteen_group_id >= 100
+// canteens have to use a canteen_id < 100
+export const max_canteen_id = 99;
+
+export const all_canteen_groups: ICanteenGroup[] = [
+  {
+    name: "Mensen Eupener Straße & Südpark",
+    canteen_group_id: 100,
+    canteens: [
+      all_canteens.find(c => c.identifier === "eups"),
+      all_canteens.find(c => c.identifier === "suedpark")
+    ]
+  }
 ];
 
 export const greetings: string[] = [

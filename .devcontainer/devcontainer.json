@@ -1,0 +1,35 @@
+{
+  "name": "TypeScript Node.js",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:22",
+  "features": {},
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.formatOnPaste": true,
+        "editor.formatOnSave": true,
+        "editor.tabSize": 2,
+        "files.insertFinalNewline": true,
+        "todo-tree.highlights.useColourScheme": true
+      },
+      "extensions": [
+        // theme
+        "pkief.material-icon-theme",
+        "oderwat.indent-rainbow",
+        "usernamehw.errorlens",
+
+        // default extensions
+        "github.copilot",
+        "github.copilot-chat",
+        "gruntfuggly.todo-tree",
+        "eamodio.gitlens",
+        "streetsidesoftware.code-spell-checker",
+
+        // file support
+        "github.vscode-github-actions",
+        "bierner.markdown-emoji",
+        "ms-vscode.makefile-tools"
+      ]
+    }
+  }
+  // "postCreateCommand": "nvm install v22.12.0 && npm install"
+}
