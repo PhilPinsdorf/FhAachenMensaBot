@@ -1,10 +1,11 @@
 import { bot } from ".";
-import { all_canteens, replys } from "./types/definitions"; 
+import { all_canteens, all_canteen_groups, replys, max_canteen_id } from "./types/definitions"; 
 import sanitize from "mongo-sanitize";
 import { Context, InlineKeyboard, InputFile } from "grammy";
 import { user_exists, add_user, remove_user, update_canteen, update_time, update_allergens } from "./database/database_operations"
 import { escape_message } from "./messages/build_messages";
 import { broadcast_message, send_message } from "./messages/send_messages";
+import { ICanteen, ICanteenGroup } from "./types/interfaces";
 
 // Returns a promise, that starts the bot
 export function start_bot(): Promise<void> {
@@ -193,7 +194,12 @@ export function start_bot(): Promise<void> {
                 return;
             }
 
-            const canteen = all_canteens.find(c => c.canteen_id === canteen_id);
+            let canteen: ICanteen | ICanteenGroup;
+            if (canteen_id <= max_canteen_id) {
+                canteen = all_canteens.find(c => c.canteen_id === canteen_id);
+            } else {
+                canteen = all_canteen_groups.find(c => c.canteen_group_id === canteen_id);
+            }
             ctx.editMessageText(escape_message(replys.canteen(canteen.name)), { parse_mode: 'MarkdownV2' });
         });
 
@@ -222,6 +228,8 @@ function generate_canteen_keyboard(): InlineKeyboard {
     const keyboardButtons = []
     for(let canteen of all_canteens) 
         keyboardButtons.push([InlineKeyboard.text(canteen.name, `update-canteen-${canteen.canteen_id}`)]);
+    for(let canteen_group of all_canteen_groups) 
+        keyboardButtons.push([InlineKeyboard.text(canteen_group.name, `update-canteen-${canteen_group.canteen_group_id}`)]);
     return InlineKeyboard.from(keyboardButtons)
 }
 

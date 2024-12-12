@@ -1,5 +1,5 @@
 import { todays_menus, tomorrows_menus } from "../parse/request_menus";
-import { all_canteens, greetings } from "../types/definitions"; 
+import { all_canteens, all_canteen_groups, greetings } from "../types/definitions"; 
 import { IMenu } from "../types/interfaces";
 import moment from "moment"
 import { TypeExpressionOperatorReturningBoolean } from "mongoose";
@@ -30,6 +30,22 @@ export function parseMessages() {
         final_messages.tomorrow_allergens[canteen.canteen_id] = escape_message(
             build_menu_message(tomorrows_menus[canteen.canteen_id], canteen.name, getDayTitle(), true)
         );
+    }
+    for(let canteen_group of all_canteen_groups) {
+        let today: string = "";
+        let today_allergens: string = "";
+        let tomorrow: string = "";
+        let tomorrow_allergens: string = "";
+        for (let canteen of canteen_group.canteens) {
+            today += final_messages.today[canteen.canteen_id];
+            today_allergens += final_messages.today_allergens[canteen.canteen_id];
+            tomorrow += final_messages.tomorrow[canteen.canteen_id];
+            tomorrow_allergens += final_messages.tomorrow_allergens[canteen.canteen_id];
+        }
+        final_messages.today[canteen_group.canteen_group_id] = today;
+        final_messages.today_allergens[canteen_group.canteen_group_id] = today_allergens;
+        final_messages.tomorrow[canteen_group.canteen_group_id] = tomorrow;
+        final_messages.tomorrow_allergens[canteen_group.canteen_group_id] = tomorrow_allergens;
     }
 }
 
