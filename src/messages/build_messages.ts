@@ -39,7 +39,7 @@ export function escape_message(message: string): string {
 }
 
 export function random_greeting(): string {
-    const randomIndex = Math.floor(Math.random() * greetings.length);
+    const randomIndex = Math.round(Math.random() * greetings.length);
     return greetings[randomIndex];
 }
 
