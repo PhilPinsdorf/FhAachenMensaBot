@@ -12,7 +12,7 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^1.7.9",
-    "grammy": "^1.32.0",
+    "grammy": "^1.34.0",
     "moment": "^2.29.4",
     "mongo-sanitize": "^1.1.0",
     "mongoose": "^8.8.4",
