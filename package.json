@@ -15,7 +15,7 @@
     "grammy": "^1.32.0",
     "moment": "^2.29.4",
     "mongo-sanitize": "^1.1.0",
-    "mongoose": "^8.8.4",
+    "mongoose": "^8.9.3",
     "node-schedule": "^2.1.0"
   },
   "engines": {
