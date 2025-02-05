@@ -69,7 +69,6 @@ export const greetings: string[] = [
   "Hi",
   "Guten Morgen",
   "Guten Tag",
-  "Moin",
   "Hallöchen",
   "Heyho",
   "Schönen guten Tag",
