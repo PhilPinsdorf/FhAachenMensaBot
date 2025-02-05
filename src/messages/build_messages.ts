@@ -39,8 +39,18 @@ export function escape_message(message: string): string {
 }
 
 export function random_greeting(): string {
-    const randomIndex = Math.round(Math.random() * greetings.length);
-    return greetings[randomIndex];
+    const randomIndex = Math.round(Math.random() * (greetings.length + 1));
+    if (randomIndex !== 0) return greetings[randomIndex];
+
+    // Last Moin only possible in theory because the number is floored,
+    // so 3 is effectively 2 because 3 are so incredibly rare.
+    // This is intentional for a "jackpot" effect.
+    const maxMoins = 5;
+    
+    // Make the moins progressively more rare.
+    const moinCount = 1 + Math.floor(Math.random() ** 2 * (maxMoins - 1));
+
+    return "Moin ".repeat(moinCount).trimEnd();
 }
 
 function build_menu_message(menu: IMenu, canteen_name: string, day_title: string, allergens: boolean): string{
