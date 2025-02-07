@@ -1,3 +1,9 @@
+export interface ICanteenGroup {
+    name: string;
+    canteen_group_id: number;
+    canteens: ICanteen[];
+}
+
 export interface ICanteen { 
     name: string; 
     identifier: string; 
